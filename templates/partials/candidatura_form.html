@@ -1,0 +1,27 @@
+{% load site_tags %}
+<form method="post" enctype="multipart/form-data" class="form" novalidate data-form>
+  {% csrf_token %}
+  <div class="hp-wrap" aria-hidden="true">{{ form.site }}</div>
+  <div class="form__grid">
+    {% if not esconder_vaga %}{% include "partials/form_field.html" with f=form.vaga wide=1 %}{% else %}<input type="hidden" name="vaga" value="{{ v.pk }}">{% endif %}
+    {% include "partials/form_field.html" with f=form.nome %}
+    {% include "partials/form_field.html" with f=form.telefone %}
+    {% include "partials/form_field.html" with f=form.email %}
+    {% include "partials/form_field.html" with f=form.cidade %}
+    <div class="field field--wide{% if form.curriculo.errors %} field--err{% endif %}">
+      <label>Currículo (PDF ou Word, até 5 MB)</label>
+      <label class="drop" data-drop>
+        <input type="file" name="curriculo" accept=".pdf,.doc,.docx,.odt">
+        {% icone "download" "ico ico--lg" %}
+        <span class="drop__txt"><b>Clique para anexar</b> ou arraste o arquivo aqui</span>
+      </label>
+      {% for e in form.curriculo.errors %}<small class="field__err">{{ e }}</small>{% endfor %}
+    </div>
+    {% include "partials/form_field.html" with f=form.mensagem wide=1 %}
+    <div class="field field--wide field--check{% if form.aceite.errors %} field--err{% endif %}">
+      <label>{{ form.aceite }} <span>{{ form.aceite.label }}</span></label>
+      {% for e in form.aceite.errors %}<small class="field__err">{{ e }}</small>{% endfor %}
+    </div>
+  </div>
+  <button class="btn btn--block" type="submit">Enviar candidatura {% icone "arrow" %}</button>
+</form>

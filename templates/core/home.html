@@ -1,0 +1,230 @@
+{% extends "base.html" %}
+{% load static site_tags %}
+{% block header_class %}hdr--over{% endblock %}
+
+{% block content %}
+{# ------------------------------------------------------------------ HERO #}
+{% with h=S.home_hero %}
+<section class="hero">
+  <div class="hero__slides" aria-hidden="true">
+    {% for s in slides %}<div class="hero__slide{% if forloop.first %} on{% endif %}" style="background-image:url('{{ s.imagem.url }}')"></div>
+    {% empty %}<div class="hero__slide on" style="background-image:url('{% static 'img/hero-padrao.jpg' %}')"></div>{% endfor %}
+  </div>
+  <div class="hero__shade"></div>
+  <div class="hero__grid-lines" aria-hidden="true"></div>
+  <div class="container hero__in">
+    <div class="hero__copy">
+      {% if h.sobretitulo %}<span class="eyebrow eyebrow--light hero__anim" style="--d:.1s">{{ h.sobretitulo }}</span>{% endif %}
+      <h1 class="hero__title hero__anim" style="--d:.25s">{{ h.titulo|destacar:h.destaque }}</h1>
+      <div class="hero__txt hero__anim" style="--d:.4s">{{ h.texto|paragrafos }}</div>
+      <div class="hero__ctas hero__anim" style="--d:.55s">
+        {% if h.botao_texto %}<a href="{{ h.botao_link }}" class="btn btn--lg">{{ h.botao_texto }} {% icone "arrow" %}</a>{% endif %}
+        <a href="{% url 'core:trabalhe' %}" class="btn btn--lg btn--ghost">Trabalhe conosco</a>
+      </div>
+      <ul class="hero__trust hero__anim" style="--d:.7s">
+        {% for item in h.lista %}<li>{% icone "check" %} {{ item }}</li>{% endfor %}
+      </ul>
+    </div>
+    <div class="hero__visual">
+      <div class="hero__blob" aria-hidden="true"></div>
+      <img class="hero__person" src="{% if h.imagem %}{{ h.imagem.url }}{% else %}{% static 'img/hero-padrao.jpg' %}{% endif %}" alt="" width="550" height="835">
+      {% for n in numeros|slice:":2" %}
+      <div class="float-card float-card--{{ forloop.counter }}">
+        <strong><span data-count="{{ n.valor }}">{{ n.valor }}</span>{{ n.sufixo }}</strong><span>{{ n.rotulo }}</span>
+      </div>
+      {% endfor %}
+      <a href="tel:{{ CFG.telefone_link }}" class="float-card float-card--tel">
+        <span class="float-card__ico">{% icone "phone" %}</span>
+        <span><small>Contate-nos</small><strong>{{ CFG.telefone }}</strong></span>
+      </a>
+    </div>
+  </div>
+  <a href="#sobre" class="hero__scroll" aria-label="Rolar para baixo"><span></span></a>
+</section>
+{% endwith %}
+
+{% avisos "home" %}
+
+{# ------------------------------------------------------------------ MARQUEE UNIDADES #}
+{% if unidades %}
+<div class="marquee" aria-label="Cidades atendidas">
+  <div class="marquee__track">
+    {% for i in "12" %}{% for u in unidades %}<span>{% icone "pin" %} {{ u.nome }} <em>{{ u.uf }}</em></span>{% endfor %}{% endfor %}
+  </div>
+</div>
+{% endif %}
+
+{# ------------------------------------------------------------------ SOBRE #}
+{% with s=S.home_sobre %}{% if s.ativo %}
+<section class="sec" id="sobre">
+  <div class="container split">
+    <div class="split__media" data-reveal="left">
+      <div class="stack">
+        <img class="stack__main" src="{% if s.imagem %}{{ s.imagem.url }}{% endif %}" alt="Equipe do Grupo Nordeste" loading="lazy">
+        {% with n=numeros.0 %}{% if n %}<div class="stack__badge">
+          <small>Experiência</small>
+          <strong>{{ n.prefixo }}<span data-count="{{ n.valor }}">{{ n.valor }}</span>{{ n.sufixo }}</strong>
+          <span>{{ n.rotulo }}</span>
+        </div>{% endif %}{% endwith %}
+        <div class="stack__dots" aria-hidden="true"></div>
+      </div>
+    </div>
+    <div class="split__copy">
+      <span class="eyebrow" data-reveal>{{ s.sobretitulo }}</span>
+      <h2 class="h2" data-reveal>{{ s.titulo|destacar:s.destaque }}</h2>
+      <div class="prose" data-reveal>{{ s.texto|paragrafos }}</div>
+      <ul class="checks" data-reveal>
+        {% for item in s.lista %}<li><span>{% icone "check" %}</span>{{ item }}</li>{% endfor %}
+      </ul>
+      {% if s.botao_texto %}<a href="{{ s.botao_link }}" class="btn" data-reveal>{{ s.botao_texto }} {% icone "arrow" %}</a>{% endif %}
+    </div>
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{# ------------------------------------------------------------------ SERVIÇOS #}
+{% with s=S.home_servicos %}{% if s.ativo %}
+<section class="sec sec--dark" id="servicos">
+  <div class="sec__glow" aria-hidden="true"></div>
+  <div class="container">
+    <header class="sec__head sec__head--center">
+      <span class="eyebrow eyebrow--light" data-reveal>{{ s.sobretitulo }}</span>
+      <h2 class="h2" data-reveal>{{ s.titulo|destacar:s.destaque }}</h2>
+      {% if s.subtitulo %}<p data-reveal>{{ s.subtitulo }}</p>{% endif %}
+    </header>
+    <div class="services">
+      {% for sv in servicos %}
+      <article class="svc" data-reveal style="--i:{{ forloop.counter0 }}">
+        <span class="svc__n">{{ forloop.counter|stringformat:"02d" }}</span>
+        <div class="svc__ico">{% icone sv.icone "ico ico--xl" %}</div>
+        <h3>{{ sv.titulo }}</h3>
+        <p>{{ sv.resumo }}</p>
+        {% if sv.descricao %}<p class="svc__more">{{ sv.descricao|truncatechars:160 }}</p>{% endif %}
+      </article>
+      {% endfor %}
+    </div>
+    {% avisos "home-servicos" %}
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{# ------------------------------------------------------------------ NÚMEROS #}
+{% if numeros %}
+<section class="stats">
+  <div class="container stats__grid">
+    {% for n in numeros %}
+    <div class="stat" data-reveal style="--i:{{ forloop.counter0 }}">
+      <strong>{{ n.prefixo }}<span data-count="{{ n.valor }}">0</span>{{ n.sufixo }}</strong>
+      <span>{{ n.rotulo }}</span>
+    </div>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{# ------------------------------------------------------------------ UNIDADES #}
+{% with s=S.home_unidades %}{% if s.ativo and unidades %}
+<section class="sec sec--soft" id="unidades">
+  <div class="container">
+    <header class="sec__head sec__head--row">
+      <div>
+        <span class="eyebrow" data-reveal>{{ s.sobretitulo }}</span>
+        <h2 class="h2" data-reveal>{{ s.titulo|destacar:s.destaque }}</h2>
+        {% if s.subtitulo %}<p data-reveal>{{ s.subtitulo }}</p>{% endif %}
+      </div>
+      <a href="{% url 'core:unidades' %}" class="btn btn--outline" data-reveal>Ver todas as unidades {% icone "arrow" %}</a>
+    </header>
+    <div class="ugrid ugrid--scroll">
+      {% for u in unidades|slice:":8" %}{% include "partials/unidade_card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{# ------------------------------------------------------------------ TRABALHE CONOSCO #}
+{% with s=S.home_trabalhe %}{% if s.ativo %}
+<section class="sec careers" id="trabalhe">
+  <div class="careers__bg" style="background-image:url('{% if s.imagem %}{{ s.imagem.url }}{% else %}{% static 'img/hero-padrao.jpg' %}{% endif %}')"></div>
+  <div class="container careers__in">
+    <div class="careers__copy">
+      <span class="eyebrow eyebrow--light" data-reveal>{{ s.sobretitulo }}</span>
+      <h2 class="h2" data-reveal>{{ s.titulo|destacar:s.destaque }}</h2>
+      <div class="prose prose--light" data-reveal>{{ s.texto|paragrafos }}</div>
+      <div class="btn-row" data-reveal>
+        <a href="{% url 'core:trabalhe' %}#candidatura" class="btn">Cadastrar currículo {% icone "arrow" %}</a>
+        {% for d in editais %}<a href="{{ d.url }}" target="_blank" rel="noopener" class="btn btn--ghost">{% icone "file" %} {{ d.titulo }}</a>{% endfor %}
+      </div>
+    </div>
+    <div class="careers__jobs">
+      {% if vagas %}
+      <div class="careers__label" data-reveal><span class="live"></span> Vagas abertas agora</div>
+      {% for v in vagas %}{% include "partials/vaga_card.html" %}{% endfor %}
+      <a href="{% url 'core:trabalhe' %}" class="careers__all" data-reveal>Ver todas as vagas {% icone "arrow" %}</a>
+      {% else %}
+      <div class="empty empty--dark" data-reveal>{% icone "briefcase" "ico ico--xl" %}<p>Nenhuma vaga aberta no momento.<br>Cadastre seu currículo no nosso banco de talentos!</p></div>
+      {% endif %}
+    </div>
+  </div>
+  <div class="container">{% avisos "home-trabalhe" %}</div>
+</section>
+{% endif %}{% endwith %}
+
+{# ------------------------------------------------------------------ CONTATO #}
+{% with s=S.home_contato %}{% if s.ativo %}
+<section class="sec" id="contato">
+  <div class="container split split--form">
+    <div class="split__copy">
+      <span class="eyebrow" data-reveal>{{ s.sobretitulo }}</span>
+      <h2 class="h2" data-reveal>{{ s.titulo|destacar:s.destaque }}</h2>
+      <div class="prose" data-reveal>{{ s.texto|paragrafos }}</div>
+      <ul class="clist" data-reveal>
+        <li><span class="clist__ico">{% icone "phone" %}</span><div><small>Ligue já</small><a href="tel:{{ CFG.telefone_link }}">{{ CFG.telefone }}</a></div></li>
+        <li><span class="clist__ico">{% icone "mail" %}</span><div><small>E-mail</small><a href="mailto:{{ CFG.email }}">{{ CFG.email }}</a></div></li>
+        <li><span class="clist__ico">{% icone "pin" %}</span><div><small>Visite-nos</small><span>{{ CFG.endereco }}</span></div></li>
+      </ul>
+      {% if CFG.texto_redes %}<p class="muted" data-reveal>{{ CFG.texto_redes }}</p>{% endif %}
+    </div>
+    <div class="card card--form" data-reveal="right">
+      <h3>Envie uma mensagem</h3>
+      {% include "partials/contato_form.html" %}
+    </div>
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{# ------------------------------------------------------------------ INTEGRIDADE #}
+{% with s=S.home_integridade %}{% if s.ativo %}
+<section class="sec sec--tight">
+  <div class="container">
+    <div class="integrity" data-reveal>
+      <div class="integrity__col">
+        <span class="integrity__ico">{% icone "shield" "ico ico--lg" %}</span>
+        <h3>{{ s.titulo }}</h3>
+        <div>{{ s.texto|paragrafos }}</div>
+        <a href="{% url 'core:denuncias' %}" class="btn btn--white">{{ s.botao_texto|default:"Fazer denúncia" }} {% icone "arrow" %}</a>
+      </div>
+      <div class="integrity__col">
+        <h3>Códigos e políticas</h3>
+        <ul class="doclist">
+          {% for d in DOCS_ETICA %}<li><a href="{{ d.url }}" target="_blank" rel="noopener">{% icone "file" %} <span>{{ d.titulo }}</span> {% icone "download" %}</a></li>
+          {% empty %}<li class="muted">Documentos em breve.</li>{% endfor %}
+        </ul>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{# ------------------------------------------------------------------ NOTÍCIAS #}
+{% if noticias %}
+<section class="sec sec--soft">
+  <div class="container">
+    <header class="sec__head sec__head--row">
+      <div><span class="eyebrow" data-reveal>Notícias</span><h2 class="h2" data-reveal>Acontece no <em>Grupo Nordeste</em></h2></div>
+      <a href="{% url 'core:noticias' %}" class="btn btn--outline" data-reveal>Todas as notícias {% icone "arrow" %}</a>
+    </header>
+    <div class="ngrid">{% for n in noticias %}{% include "partials/noticia_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

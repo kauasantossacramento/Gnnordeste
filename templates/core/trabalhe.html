@@ -1,0 +1,51 @@
+{% extends "base.html" %}
+{% load static site_tags %}
+{% block title %}Trabalhe conosco — {{ CFG.nome }}{% endblock %}
+{% block header_class %}hdr--over{% endblock %}
+{% block content %}
+{% include "partials/page_hero.html" with sec=S.tc_hero %}
+{% avisos "trabalhe-conosco" %}
+
+<section class="sec" id="vagas">
+  <div class="container">
+    <header class="sec__head sec__head--row">
+      <div>
+        <span class="eyebrow" data-reveal>Oportunidades</span>
+        <h2 class="h2" data-reveal>Vagas <em>abertas</em></h2>
+      </div>
+      {% if editais %}<div class="btn-row" data-reveal>{% for d in editais %}<a href="{{ d.url }}" target="_blank" rel="noopener" class="btn btn--outline">{% icone "file" %} {{ d.titulo }}</a>{% endfor %}</div>{% endif %}
+    </header>
+    {% if vagas %}
+      {% if unidades_com_vagas|length > 1 %}
+      <div class="pills" role="group" aria-label="Filtrar vagas por local" data-reveal>
+        <button type="button" class="pill on" data-filter-local="">Todas <b>{{ vagas|length }}</b></button>
+        {% for l in unidades_com_vagas %}<button type="button" class="pill" data-filter-local="{{ l }}">{{ l }}</button>{% endfor %}
+      </div>
+      {% endif %}
+      <div class="vgrid">{% for v in vagas %}{% include "partials/vaga_card.html" %}{% endfor %}</div>
+    {% else %}
+      <div class="empty" data-reveal>{% icone "briefcase" "ico ico--xl" %}<p>Nenhuma vaga aberta no momento. Cadastre seu currículo abaixo e entraremos em contato quando surgir uma oportunidade.</p></div>
+    {% endif %}
+  </div>
+</section>
+
+{% with s=S.tc_form %}
+<section class="sec sec--soft" id="candidatura">
+  <div class="container split split--form">
+    <div class="split__copy">
+      <span class="eyebrow" data-reveal>{{ s.sobretitulo }}</span>
+      <h2 class="h2" data-reveal>{{ s.titulo|destacar:s.destaque }}</h2>
+      <div class="prose" data-reveal>{{ s.texto|paragrafos }}</div>
+      <ul class="steps" data-reveal>
+        {% for item in s.lista %}<li><span>{{ forloop.counter }}</span>{{ item }}</li>{% endfor %}
+      </ul>
+      {% if s.imagem %}<img class="careers__person" src="{{ s.imagem.url }}" alt="" loading="lazy" data-reveal>{% endif %}
+    </div>
+    <div class="card card--form" data-reveal="right">
+      <h3>Cadastre seu currículo</h3>
+      {% include "partials/candidatura_form.html" %}
+    </div>
+  </div>
+</section>
+{% endwith %}
+{% endblock %}

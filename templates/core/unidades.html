@@ -1,0 +1,43 @@
+{% extends "base.html" %}
+{% load static site_tags %}
+{% block title %}Unidades — {{ CFG.nome }}{% endblock %}
+{% block header_class %}hdr--over{% endblock %}
+{% block content %}
+{% include "partials/page_hero.html" with sec=S.un_hero %}
+{% avisos "unidades" %}
+<section class="sec">
+  <div class="container">
+    <div class="toolbar" data-reveal>
+      <div class="search">
+        <svg class="ico" aria-hidden="true"><use href="#i-pin"></use></svg>
+        <input type="search" placeholder="Buscar cidade…" data-filter-input=".ugrid--all .ucard" aria-label="Buscar cidade">
+      </div>
+      <div class="pills" role="group" aria-label="Filtrar por estado">
+        <button type="button" class="pill on" data-filter-uf="">Todas <b>{{ ativas|length }}</b></button>
+        {% for uf in estados %}<button type="button" class="pill" data-filter-uf="{{ uf }}">{{ uf }}</button>{% endfor %}
+      </div>
+    </div>
+    <div class="ugrid ugrid--all">
+      {% for u in ativas %}{% include "partials/unidade_card.html" %}{% endfor %}
+    </div>
+    <p class="empty-filter" hidden>Nenhuma unidade encontrada.</p>
+  </div>
+</section>
+
+{% if implantacao %}{% with s=S.un_implantacao %}
+<section class="sec sec--dark">
+  <div class="sec__glow" aria-hidden="true"></div>
+  <div class="container">
+    <header class="sec__head sec__head--center">
+      <span class="eyebrow eyebrow--light" data-reveal>{{ s.sobretitulo }}</span>
+      <h2 class="h2" data-reveal>{{ s.titulo|destacar:s.destaque }}</h2>
+      <div data-reveal>{{ s.texto|paragrafos }}</div>
+    </header>
+    <div class="ugrid ugrid--all ugrid--dark">
+      {% for u in implantacao %}{% include "partials/unidade_card.html" %}{% endfor %}
+    </div>
+  </div>
+</section>
+{% endwith %}{% endif %}
+{% include "partials/cta.html" %}
+{% endblock %}

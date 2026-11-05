@@ -1,0 +1,89 @@
+{% extends "base.html" %}
+{% load static site_tags %}
+{% block title %}Quem somos — {{ CFG.nome }}{% endblock %}
+{% block header_class %}hdr--over{% endblock %}
+{% block content %}
+{% include "partials/page_hero.html" with sec=S.qs_hero %}
+{% avisos "quem-somos" %}
+
+{% with s=S.qs_historia %}
+<section class="sec">
+  <div class="container split">
+    <div class="split__media" data-reveal="left">
+      <div class="stack">
+        {% if s.imagem %}<img class="stack__main" src="{{ s.imagem.url }}" alt="" loading="lazy">{% endif %}
+        {% with n=numeros.0 %}{% if n %}<div class="stack__badge"><small>Experiência</small><strong>{{ n.prefixo }}<span data-count="{{ n.valor }}">{{ n.valor }}</span>{{ n.sufixo }}</strong><span>{{ n.rotulo }}</span></div>{% endif %}{% endwith %}
+        <div class="stack__dots" aria-hidden="true"></div>
+      </div>
+    </div>
+    <div class="split__copy">
+      <span class="eyebrow" data-reveal>{{ s.sobretitulo }}</span>
+      <h2 class="h2" data-reveal>{{ s.titulo|destacar:s.destaque }}</h2>
+      <div class="prose" data-reveal>{{ s.texto|paragrafos }}</div>
+    </div>
+  </div>
+</section>
+{% endwith %}
+
+{% with s=S.qs_valores %}{% if s.ativo %}
+<section class="sec sec--soft">
+  <div class="container">
+    <header class="sec__head sec__head--center">
+      <span class="eyebrow" data-reveal>{{ s.sobretitulo }}</span>
+      <h2 class="h2" data-reveal>{{ s.titulo|destacar:s.destaque }}</h2>
+      {% if s.subtitulo %}<p data-reveal>{{ s.subtitulo }}</p>{% endif %}
+    </header>
+    <div class="values">
+      {% for item in s.lista %}
+      <div class="value" data-reveal style="--i:{{ forloop.counter0 }}">
+        <span class="value__n">{{ forloop.counter|stringformat:"02d" }}</span>
+        <p>{{ item }}</p>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{% if numeros %}
+<section class="stats">
+  <div class="container stats__grid">
+    {% for n in numeros %}<div class="stat" data-reveal style="--i:{{ forloop.counter0 }}"><strong>{{ n.prefixo }}<span data-count="{{ n.valor }}">0</span>{{ n.sufixo }}</strong><span>{{ n.rotulo }}</span></div>{% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% with s=S.qs_atuacao %}{% if s.ativo %}
+<section class="sec">
+  <div class="container">
+    <header class="sec__head sec__head--center">
+      <span class="eyebrow" data-reveal>{{ s.sobretitulo }}</span>
+      <h2 class="h2" data-reveal>{{ s.titulo|destacar:s.destaque }}</h2>
+    </header>
+    <div class="services services--light">
+      {% for sv in servicos %}
+      <article class="svc" data-reveal style="--i:{{ forloop.counter0 }}">
+        <span class="svc__n">{{ forloop.counter|stringformat:"02d" }}</span>
+        <div class="svc__ico">{% icone sv.icone "ico ico--xl" %}</div>
+        <h3>{{ sv.titulo }}</h3>
+        <p>{{ sv.descricao|default:sv.resumo }}</p>
+      </article>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{% if galeria %}
+<section class="sec sec--soft">
+  <div class="container">
+    <header class="sec__head sec__head--center"><span class="eyebrow" data-reveal>Galeria</span><h2 class="h2" data-reveal>Nosso <em>dia a dia</em></h2></header>
+    <div class="gallery">
+      {% for g in galeria %}<button type="button" class="gallery__item" data-reveal data-lightbox="{{ g.imagem.url }}" aria-label="Ampliar {{ g.titulo|default:'imagem' }}"><img src="{{ g.imagem.url }}" alt="{{ g.titulo }}" loading="lazy">{% if g.titulo %}<span>{{ g.titulo }}</span>{% endif %}</button>{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}
+
+{% include "partials/cta.html" %}
+{% endblock %}

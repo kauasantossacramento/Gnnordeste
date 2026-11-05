@@ -1,0 +1,146 @@
+{% load static site_tags %}<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block title %}{{ CFG.nome }} — {{ CFG.slogan }}{% endblock %}</title>
+  <meta name="description" content="{% block description %}{{ CFG.meta_descricao }}{% endblock %}">
+  <meta name="theme-color" content="#1d274e">
+  <meta property="og:title" content="{% block og_title %}{{ CFG.nome }}{% endblock %}">
+  <meta property="og:description" content="{{ CFG.meta_descricao }}">
+  <meta property="og:image" content="{{ request.scheme }}://{{ request.get_host }}{% static 'img/logo.png' %}">
+  <link rel="icon" type="image/png" href="{% static 'img/favicon.png' %}">
+  <link rel="preload" href="{% static 'fonts/poppins-latin-700-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  {% block head %}{% endblock %}
+</head>
+<body class="pg-{{ PAGINA|default:'outra' }} {% block body_class %}{% endblock %}">
+{% include "partials/icons.html" %}
+<a class="skip" href="#conteudo">Pular para o conteúdo</a>
+
+{% for a in AVISOS_FAIXA %}
+<div class="faixa faixa--{{ a.tipo }}" data-faixa="{{ a.chave_cliente }}">
+  <div class="container faixa__in">
+    <span class="faixa__pulse"></span>
+    <strong>{{ a.titulo }}</strong>{% if a.texto %}<span class="faixa__txt">{{ a.texto|truncatechars:110 }}</span>{% endif %}
+    {% if a.link %}<a href="{{ a.link }}" class="faixa__link">{{ a.botao_texto|default:"Saiba mais" }} {% icone "arrow" %}</a>{% endif %}
+    <button class="faixa__x" type="button" aria-label="Fechar aviso">{% icone "close" %}</button>
+  </div>
+</div>
+{% endfor %}
+
+<header class="hdr {% block header_class %}{% endblock %}" id="topo">
+  <div class="container hdr__in">
+    <a href="{% url 'core:home' %}" class="hdr__logo" aria-label="{{ CFG.nome }} — início">
+      <img class="logo-dark" src="{% if CFG.logo_branca %}{{ CFG.logo_branca.url }}{% else %}{% static 'img/logo-branca.png' %}{% endif %}" alt="{{ CFG.nome }}" width="190" height="42">
+      <img class="logo-light" src="{% if CFG.logo %}{{ CFG.logo.url }}{% else %}{% static 'img/logo.png' %}{% endif %}" alt="" width="190" height="42" aria-hidden="true">
+    </a>
+    <nav class="nav" id="nav" aria-label="Principal">
+      <a href="{% url 'core:home' %}" class="{% if PAGINA == 'home' %}on{% endif %}">Início</a>
+      <a href="{% url 'core:quem_somos' %}" class="{% if PAGINA == 'quem-somos' %}on{% endif %}">Quem somos</a>
+      <a href="{% url 'core:unidades' %}" class="{% if PAGINA == 'unidades' %}on{% endif %}">Unidades</a>
+      <a href="{% url 'core:trabalhe' %}" class="{% if PAGINA == 'trabalhe-conosco' %}on{% endif %}">Trabalhe conosco</a>
+      <a href="{% url 'core:noticias' %}" class="{% if PAGINA == 'noticias' %}on{% endif %}">Notícias</a>
+      <a href="{% url 'core:contato' %}" class="btn btn--sm nav__cta">Fale conosco</a>
+      <div class="nav__mobile-info">
+        <a href="tel:{{ CFG.telefone_link }}">{% icone "phone" %} {{ CFG.telefone }}</a>
+        <a href="mailto:{{ CFG.email }}">{% icone "mail" %} {{ CFG.email }}</a>
+      </div>
+    </nav>
+    <a class="hdr__tel" href="tel:{{ CFG.telefone_link }}">{% icone "phone" %}<span>{{ CFG.telefone }}</span></a>
+    <button class="hdr__burger" type="button" aria-controls="nav" aria-expanded="false" aria-label="Abrir menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<main id="conteudo">
+  {% if messages %}
+  <div class="toasts" role="status">
+    {% for m in messages %}<div class="toast toast--{{ m.tags }}">{% if m.tags == 'success' %}{% icone "check" %}{% else %}{% icone "alert" %}{% endif %}<span>{{ m }}</span></div>{% endfor %}
+  </div>
+  {% endif %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="ftr">
+  <div class="ftr__map" aria-hidden="true"></div>
+  <div class="container ftr__grid">
+    <div class="ftr__brand">
+      <img src="{% if CFG.logo_branca %}{{ CFG.logo_branca.url }}{% else %}{% static 'img/logo-branca.png' %}{% endif %}" alt="{{ CFG.nome }}" width="220" height="48" loading="lazy">
+      <p>{{ CFG.slogan }}</p>
+      <div class="social">
+        {% if CFG.instagram %}<a href="{{ CFG.instagram }}" target="_blank" rel="noopener" aria-label="Instagram">{% icone "instagram" %}</a>{% endif %}
+        {% if CFG.facebook %}<a href="{{ CFG.facebook }}" target="_blank" rel="noopener" aria-label="Facebook">{% icone "facebook" %}</a>{% endif %}
+        {% if CFG.linkedin %}<a href="{{ CFG.linkedin }}" target="_blank" rel="noopener" aria-label="LinkedIn">{% icone "linkedin" %}</a>{% endif %}
+        {% if CFG.youtube %}<a href="{{ CFG.youtube }}" target="_blank" rel="noopener" aria-label="YouTube">{% icone "youtube" %}</a>{% endif %}
+      </div>
+    </div>
+    <div>
+      <h4>Institucional</h4>
+      <ul class="ftr__links">
+        <li><a href="{% url 'core:quem_somos' %}">Quem somos</a></li>
+        <li><a href="{% url 'core:unidades' %}">Unidades</a></li>
+        <li><a href="{% url 'core:trabalhe' %}">Trabalhe conosco</a></li>
+        <li><a href="{% url 'core:noticias' %}">Notícias</a></li>
+        <li><a href="{% url 'core:contato' %}">Contato</a></li>
+      </ul>
+    </div>
+    <div>
+      <h4>Integridade</h4>
+      <ul class="ftr__links">
+        <li><a href="{% url 'core:denuncias' %}">Canal de denúncias</a></li>
+        {% for d in DOCS_ETICA %}<li><a href="{{ d.url }}" target="_blank" rel="noopener">{{ d.titulo }}</a></li>{% endfor %}
+      </ul>
+    </div>
+    <div>
+      <h4>Atendimento</h4>
+      <ul class="ftr__contact">
+        <li>{% icone "pin" %}<span>{{ CFG.endereco }}</span></li>
+        <li>{% icone "phone" %}<a href="tel:{{ CFG.telefone_link }}">{{ CFG.telefone }}</a></li>
+        <li>{% icone "mail" %}<a href="mailto:{{ CFG.email }}">{{ CFG.email }}</a></li>
+        {% if CFG.horario %}<li>{% icone "clock" %}<span>{{ CFG.horario }}</span></li>{% endif %}
+      </ul>
+    </div>
+  </div>
+  <div class="container ftr__bottom">
+    <span>© {% now "Y" %} {{ CFG.nome }}. Todos os direitos reservados.</span>
+    <a href="#topo" class="ftr__top">Voltar ao topo ↑</a>
+  </div>
+</footer>
+
+{% if CFG.whatsapp %}
+<a class="wpp" href="https://wa.me/{{ CFG.whatsapp }}" target="_blank" rel="noopener" aria-label="Conversar no WhatsApp">{% icone "whatsapp" %}<span>Fale no WhatsApp</span></a>
+{% endif %}
+
+{% for a in AVISOS_MODAL %}
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-t-{{ a.pk }}" data-modal="{{ a.chave_cliente }}" data-freq="{{ a.frequencia }}" hidden>
+  <div class="modal__bg" data-fechar></div>
+  <div class="modal__box modal__box--{{ a.tipo }}{% if a.imagem %} modal__box--img{% endif %}">
+    <button class="modal__x" type="button" data-fechar aria-label="Fechar">{% icone "close" %}</button>
+    {% if a.imagem %}<div class="modal__img"><img src="{{ a.imagem.url }}" alt=""></div>{% endif %}
+    <div class="modal__body">
+      <span class="tag tag--{{ a.tipo }}">{% include "partials/aviso_icone.html" %} {{ a.tipo_nome }}</span>
+      <h2 id="modal-t-{{ a.pk }}">{{ a.titulo }}</h2>
+      {% if a.texto %}<div class="modal__txt">{{ a.texto|paragrafos }}</div>{% endif %}
+      {% if a.vaga %}
+      <ul class="meta">
+        <li>{% icone "pin" %} {{ a.vaga.local_exibicao }}</li>
+        <li>{% icone "users" %} {{ a.vaga.quantidade }} vaga{{ a.vaga.quantidade|pluralize }}</li>
+        {% if a.vaga.prazo %}<li>{% icone "calendar" %} até {{ a.vaga.prazo|date:"d/m/Y" }}</li>{% endif %}
+      </ul>
+      {% endif %}
+      <div class="modal__actions">
+        {% if a.link %}<a href="{{ a.link }}" class="btn">{{ a.botao_texto|default:"Saiba mais" }} {% icone "arrow" %}</a>{% endif %}
+        {% if a.anexo %}<a href="{{ a.anexo.url }}" class="btn btn--ghost-dark" target="_blank" rel="noopener">{% icone "download" %} Baixar anexo</a>{% endif %}
+        <button type="button" class="btn btn--link" data-fechar>Agora não</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<script src="{% static 'js/site.js' %}" defer></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

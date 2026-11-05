@@ -1,0 +1,11 @@
+{% load static site_tags %}
+<section class="phero">
+  <div class="phero__bg" style="background-image:url('{% if sec.imagem %}{{ sec.imagem.url }}{% else %}{% static 'img/hero-padrao.jpg' %}{% endif %}')"></div>
+  <div class="container phero__in">
+    <nav class="crumbs" aria-label="Você está em"><a href="{% url 'core:home' %}">Início</a><span>/</span>{% if parent %}<a href="{{ parent_url }}">{{ parent }}</a><span>/</span>{% endif %}<span>{{ atual|default:sec.get_pagina_display }}</span></nav>
+    {% if sec.sobretitulo %}<span class="eyebrow eyebrow--light" data-reveal>{{ sec.sobretitulo }}</span>{% endif %}
+    <h1 data-reveal>{{ titulo|default:sec.titulo|destacar:sec.destaque }}</h1>
+    {% if sec.subtitulo %}<p class="phero__sub" data-reveal>{{ sec.subtitulo }}</p>{% endif %}
+  </div>
+  <div class="phero__wave" aria-hidden="true"></div>
+</section>

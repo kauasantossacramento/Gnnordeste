@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% load static site_tags %}
+{% block title %}{{ u.nome }} - {{ u.uf }} — {{ CFG.nome }}{% endblock %}
+{% block description %}{{ u.resumo }}{% endblock %}
+{% block header_class %}hdr--over{% endblock %}
+{% block content %}
+<section class="phero phero--img">
+  <div class="phero__bg" style="background-image:url('{% if u.imagem %}{{ u.imagem.url }}{% else %}{% static 'img/hero-padrao.jpg' %}{% endif %}')"></div>
+  <div class="container phero__in">
+    <nav class="crumbs"><a href="{% url 'core:home' %}">Início</a><span>/</span><a href="{% url 'core:unidades' %}">Unidades</a><span>/</span><span>{{ u.nome }}</span></nav>
+    <span class="eyebrow eyebrow--light" data-reveal>{% if u.status == 'implantacao' %}Em implantação{% elif u.sede %}Sede administrativa{% else %}Unidade em operação{% endif %}</span>
+    <h1 data-reveal>{{ u.nome }} <em>{{ u.uf }}</em></h1>
+    <p class="phero__sub" data-reveal>{{ u.resumo }}</p>
+  </div>
+  <div class="phero__wave" aria-hidden="true"></div>
+</section>
+<section class="sec">
+  <div class="container detail">
+    <div class="detail__main prose" data-reveal>
+      {{ u.descricao|default:u.resumo|paragrafos }}
+      {% if vagas %}
+      <h2 class="h3">Vagas abertas nesta unidade</h2>
+      <div class="vgrid vgrid--2">{% for v in vagas %}{% include "partials/vaga_card.html" %}{% endfor %}</div>
+      {% endif %}
+    </div>
+    <aside class="detail__side" data-reveal="right">
+      <div class="card">
+        <h3>Informações</h3>
+        <ul class="clist clist--sm">
+          <li><span class="clist__ico">{% icone "pin" %}</span><div><small>Endereço</small><span>{{ u.endereco|default:"Atendimento pela sede em Salvador/BA" }}</span></div></li>
+          <li><span class="clist__ico">{% icone "phone" %}</span><div><small>Telefone</small><a href="tel:{{ CFG.telefone_link }}">{{ u.telefone|default:CFG.telefone }}</a></div></li>
+        </ul>
+        <a href="{% url 'core:contato' %}" class="btn btn--block">Falar com a unidade {% icone "arrow" %}</a>
+      </div>
+    </aside>
+  </div>
+</section>
+{% if outras %}
+<section class="sec sec--soft">
+  <div class="container">
+    <header class="sec__head"><h2 class="h2" data-reveal>Outras <em>unidades</em></h2></header>
+    <div class="ugrid">{% for u in outras %}{% include "partials/unidade_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}
+{% endblock %}

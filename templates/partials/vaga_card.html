@@ -1,0 +1,14 @@
+{% load site_tags %}
+<article class="vcard" data-reveal data-local="{{ v.local_exibicao }}">
+  <div class="vcard__top">
+    <span class="chip">{{ v.get_regime_display }}</span>
+    {% if v.prazo %}<span class="vcard__prazo">{% icone "calendar" %} até {{ v.prazo|date:"d/m/Y" }}</span>{% endif %}
+  </div>
+  <h3><a href="{{ v.get_absolute_url }}">{{ v.titulo }}</a></h3>
+  <p>{{ v.resumo|truncatechars:130 }}</p>
+  <ul class="meta">
+    <li>{% icone "pin" %} {{ v.local_exibicao }}</li>
+    <li>{% icone "users" %} {{ v.quantidade }} vaga{{ v.quantidade|pluralize }}</li>
+  </ul>
+  <a href="{{ v.get_absolute_url }}" class="vcard__go">Ver vaga e candidatar-se {% icone "arrow" %}</a>
+</article>

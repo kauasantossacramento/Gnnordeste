@@ -1,0 +1,27 @@
+{% load site_tags %}{% if avisos %}
+<div class="avisos">
+  {% for a in avisos %}
+  <article class="aviso aviso--{{ a.tipo }}{% if a.imagem %} aviso--img{% endif %}" data-reveal>
+    {% if a.imagem %}<div class="aviso__img"><img src="{{ a.imagem.url }}" alt="" loading="lazy"></div>{% endif %}
+    <div class="aviso__icon">{% include "partials/aviso_icone.html" %}</div>
+    <div class="aviso__body">
+      <span class="aviso__tipo">{{ a.tipo_nome }}</span>
+      <h3>{{ a.titulo }}</h3>
+      {% if a.texto %}<div class="aviso__txt">{{ a.texto|paragrafos }}</div>{% endif %}
+      {% if a.vaga %}
+      <ul class="meta">
+        <li>{% icone "pin" %} {{ a.vaga.local_exibicao }}</li>
+        <li>{% icone "briefcase" %} {{ a.vaga.get_regime_display }}</li>
+        <li>{% icone "users" %} {{ a.vaga.quantidade }} vaga{{ a.vaga.quantidade|pluralize }}</li>
+        {% if a.vaga.prazo %}<li>{% icone "calendar" %} até {{ a.vaga.prazo|date:"d/m" }}</li>{% endif %}
+      </ul>
+      {% endif %}
+    </div>
+    <div class="aviso__actions">
+      {% if a.link %}<a href="{{ a.link }}" class="btn btn--sm">{{ a.botao_texto|default:"Saiba mais" }} {% icone "arrow" %}</a>{% endif %}
+      {% if a.anexo %}<a href="{{ a.anexo.url }}" target="_blank" rel="noopener" class="btn btn--sm btn--ghost-dark">{% icone "download" %} Anexo</a>{% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% endif %}

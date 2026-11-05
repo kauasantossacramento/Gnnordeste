@@ -1,0 +1,13 @@
+{% load site_tags %}
+<form method="post" class="form" novalidate data-form>
+  {% csrf_token %}
+  <div class="hp-wrap" aria-hidden="true">{{ form.site }}</div>
+  <div class="form__grid">
+    {% include "partials/form_field.html" with f=form.nome %}
+    {% include "partials/form_field.html" with f=form.email %}
+    {% include "partials/form_field.html" with f=form.telefone %}
+    {% include "partials/form_field.html" with f=form.assunto %}
+    {% include "partials/form_field.html" with f=form.mensagem wide=1 %}
+  </div>
+  <button class="btn btn--block" type="submit">Enviar mensagem {% icone "arrow" %}</button>
+</form>

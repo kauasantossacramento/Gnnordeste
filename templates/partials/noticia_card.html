@@ -1,0 +1,10 @@
+{% load static site_tags %}
+<a href="{{ n.get_absolute_url }}" class="ncard" data-reveal>
+  <div class="ncard__img">{% if n.capa %}<img src="{{ n.capa.url }}" alt="" loading="lazy">{% else %}<img src="{% static 'img/hero-padrao.jpg' %}" alt="" loading="lazy">{% endif %}</div>
+  <div class="ncard__body">
+    <time datetime="{{ n.data|date:'c' }}">{% icone "calendar" %} {{ n.data|date:"d \d\e F \d\e Y" }}</time>
+    <h3>{{ n.titulo }}</h3>
+    <p>{{ n.resumo|truncatechars:120 }}</p>
+    <span class="ucard__more">Ler notícia {% icone "arrow" %}</span>
+  </div>
+</a>

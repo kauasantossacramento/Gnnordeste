@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load site_tags %}
+{% block title %}Contato — {{ CFG.nome }}{% endblock %}
+{% block header_class %}hdr--over{% endblock %}
+{% block content %}
+{% include "partials/page_hero.html" with sec=S.ct_hero %}
+{% avisos "contato" %}
+<section class="sec">
+  <div class="container">
+    <div class="ccards">
+      <a class="ccard" href="https://www.google.com/maps/search/?api=1&query={{ CFG.endereco|urlencode }}" target="_blank" rel="noopener" data-reveal style="--i:0">
+        <span class="clist__ico">{% icone "pin" %}</span><h3>Visite-nos</h3><p>{{ CFG.endereco }}</p></a>
+      <a class="ccard" href="tel:{{ CFG.telefone_link }}" data-reveal style="--i:1">
+        <span class="clist__ico">{% icone "phone" %}</span><h3>Ligue já</h3><p>{{ CFG.telefone }}<br><small>{{ CFG.horario }}</small></p></a>
+      <a class="ccard" href="mailto:{{ CFG.email }}" data-reveal style="--i:2">
+        <span class="clist__ico">{% icone "mail" %}</span><h3>Mensagem</h3><p>{{ CFG.email }}</p></a>
+    </div>
+  </div>
+</section>
+<section class="sec sec--soft">
+  <div class="container split split--form">
+    <div class="split__copy">
+      {% with s=S.home_contato %}
+      <span class="eyebrow" data-reveal>{{ s.sobretitulo }}</span>
+      <h2 class="h2" data-reveal>{{ s.titulo|destacar:s.destaque }}</h2>
+      <div class="prose" data-reveal>{{ s.texto|paragrafos }}</div>
+      {% endwith %}
+      <div class="map" data-reveal>
+        <iframe title="Mapa" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          src="{% if CFG.mapa_embed %}{{ CFG.mapa_embed }}{% else %}https://www.google.com/maps?q={{ CFG.endereco|urlencode }}&output=embed{% endif %}"></iframe>
+      </div>
+    </div>
+    <div class="card card--form" data-reveal="right">
+      <h3>Envie uma mensagem</h3>
+      {% include "partials/contato_form.html" %}
+    </div>
+  </div>
+</section>
+{% endblock %}

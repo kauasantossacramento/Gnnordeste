@@ -1,0 +1,21 @@
+{% extends "base.html" %}
+{% load site_tags %}
+{% block title %}Notícias — {{ CFG.nome }}{% endblock %}
+{% block header_class %}hdr--over{% endblock %}
+{% block content %}
+{% include "partials/page_hero.html" with sec=S.nt_hero %}
+{% avisos "noticias" %}
+<section class="sec"><div class="container">
+  {% if pagina.object_list %}
+  <div class="ngrid">{% for n in pagina %}{% include "partials/noticia_card.html" %}{% endfor %}</div>
+  {% if pagina.has_other_pages %}
+  <nav class="pager" aria-label="Páginas">
+    {% if pagina.has_previous %}<a href="?p={{ pagina.previous_page_number }}">← Anteriores</a>{% endif %}
+    <span>Página {{ pagina.number }} de {{ pagina.paginator.num_pages }}</span>
+    {% if pagina.has_next %}<a href="?p={{ pagina.next_page_number }}">Próximas →</a>{% endif %}
+  </nav>{% endif %}
+  {% else %}
+  <div class="empty">{% icone "info" "ico ico--xl" %}<p>Nenhuma notícia publicada ainda.</p></div>
+  {% endif %}
+</div></section>
+{% endblock %}

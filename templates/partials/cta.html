@@ -1,0 +1,16 @@
+{% load site_tags %}{% with s=S.cta_final %}{% if s.ativo %}
+<section class="sec sec--tight">
+  <div class="container">
+    <div class="cta" data-reveal>
+      <div>
+        <h2>{{ s.titulo|destacar:s.destaque }}</h2>
+        <p>{{ s.subtitulo }}</p>
+      </div>
+      <div class="btn-row">
+        <a href="{{ s.botao_link|default:'/contato/' }}" class="btn btn--white">{{ s.botao_texto|default:"Fale conosco" }} {% icone "arrow" %}</a>
+        <a href="tel:{{ CFG.telefone_link }}" class="btn btn--ghost">{% icone "phone" %} {{ CFG.telefone }}</a>
+      </div>
+    </div>
+  </div>
+</section>
+{% endif %}{% endwith %}

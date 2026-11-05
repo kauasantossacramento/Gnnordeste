@@ -1,0 +1,22 @@
+{% extends "base.html" %}
+{% load static site_tags %}
+{% block title %}{{ n.titulo }} — {{ CFG.nome }}{% endblock %}
+{% block description %}{{ n.resumo }}{% endblock %}
+{% block header_class %}hdr--over{% endblock %}
+{% block content %}
+<section class="phero">
+  <div class="phero__bg" style="background-image:url('{% if n.capa %}{{ n.capa.url }}{% else %}{% static 'img/hero-padrao.jpg' %}{% endif %}')"></div>
+  <div class="container phero__in phero__in--narrow">
+    <nav class="crumbs"><a href="{% url 'core:home' %}">Início</a><span>/</span><a href="{% url 'core:noticias' %}">Notícias</a></nav>
+    <span class="eyebrow eyebrow--light" data-reveal>{{ n.data|date:"d \d\e F \d\e Y" }}</span>
+    <h1 data-reveal>{{ n.titulo }}</h1>
+  </div>
+  <div class="phero__wave" aria-hidden="true"></div>
+</section>
+<section class="sec"><div class="container article">
+  <p class="lead" data-reveal>{{ n.resumo }}</p>
+  <div class="prose" data-reveal>{{ n.conteudo|paragrafos }}</div>
+  <a href="{% url 'core:noticias' %}" class="btn btn--outline">← Voltar às notícias</a>
+</div></section>
+{% if outras %}<section class="sec sec--soft"><div class="container"><header class="sec__head"><h2 class="h2">Leia também</h2></header><div class="ngrid">{% for n in outras %}{% include "partials/noticia_card.html" %}{% endfor %}</div></div></section>{% endif %}
+{% endblock %}
