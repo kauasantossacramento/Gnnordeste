@@ -1,0 +1,119 @@
+{% extends "base.html" %}
+{% load emp %}
+{% block title %}Monte sua equipe · Solicite uma proposta · {{ CFG.nome }}{% endblock %}
+{% block description %}Diga quais serviços, quantos profissionais e onde. A Empreender Soluções monta uma proposta sob medida de mão de obra e apoio administrativo.{% endblock %}
+{% block body_class %}pg-sim{% endblock %}
+{% block content %}
+{% include "partials/topo_pagina.html" with sec=S.proposta_topo escuro=1 %}
+{% avisos "proposta" %}
+<section class="secao secao--sim">
+  <div class="wrap">
+  {% if enviada %}
+    <div class="sim-ok" data-revela>
+      <span class="sucesso__ico">{% icone "check" "i i--32" %}</span>
+      {% with ok=S.proposta_sucesso %}
+      <p class="rotulo">{{ ok.sobretitulo }}</p>
+      <h2 class="h2">{{ ok.titulo|troca:enviada.nome.split.0 }}</h2>
+      {{ ok.texto|paragrafos }}
+      {% endwith %}
+      <p>Protocolo <b class="protocolo protocolo--inline" data-copiar>{{ enviada.protocolo }}</b></p>
+      <dl class="resumo-lista">
+        <div><dt>Serviços</dt><dd>{% for s in enviada.servicos.all %}{{ s.titulo }}{% if not forloop.last %}, {% endif %}{% endfor %}</dd></div>
+        <div><dt>Profissionais</dt><dd>{{ enviada.profissionais }}</dd></div>
+        <div><dt>Local</dt><dd>{{ enviada.cidade }}/{{ enviada.uf }}</dd></div>
+        <div><dt>Início</dt><dd>{{ enviada.get_inicio_display }}</dd></div>
+      </dl>
+      <a href="{% url 'core:home' %}" class="btn btn--contorno">Voltar ao início</a>
+    </div>
+  {% else %}
+    <form method="post" class="sim" novalidate data-sim>
+      {% csrf_token %}
+      <div class="pote" aria-hidden="true">{{ form.website }}</div>
+      {{ form.perfis }}
+      <div class="sim__principal">
+        <ol class="sim__passos" aria-label="Etapas">
+          <li class="on" data-ir="1"><span>1</span>Serviços</li><li data-ir="2"><span>2</span>Equipe</li><li data-ir="3"><span>3</span>Local</li><li data-ir="4"><span>4</span>Contato</li>
+        </ol>
+        <div class="sim__barra"><span data-sim-progresso></span></div>
+
+        <fieldset class="sim__etapa" data-etapa="1">
+          <legend><span class="rotulo">Etapa 1 de 4</span>{{ etapas_sim.0|default:"Quais serviços você precisa?" }}</legend>
+          <div class="sim__servicos{% if form.servicos.errors %} campo--erro{% endif %}">
+            {% for sv in servicos %}
+            <label class="opcao-servico">
+              <input type="checkbox" name="servicos" value="{{ sv.pk }}" data-nome="{{ sv.titulo }}" data-perfis="{{ sv.lista_perfis|join:'|' }}" {% if sv.pk|stringformat:'s' in selecionados %}checked{% endif %}>
+              <span class="opcao-servico__caixa">{% icone sv.icone "i i--32" %}<b>{{ sv.titulo }}</b><small>{{ sv.resumo|truncatechars:70 }}</small><i>{% icone "check" %}</i></span>
+            </label>
+            {% endfor %}
+          </div>
+          {% for e in form.servicos.errors %}<small class="campo__erro">{{ e }}</small>{% endfor %}
+          <div class="sim__perfis" data-perfis-box hidden><p class="rotulo">Perfis que você precisa (opcional)</p><div class="chips" data-perfis-lista></div></div>
+        </fieldset>
+
+        <fieldset class="sim__etapa" data-etapa="2" hidden>
+          <legend><span class="rotulo">Etapa 2 de 4</span>{{ etapas_sim.1|default:"Como é a equipe?" }}</legend>
+          <div class="campo campo--largo">
+            <label for="id_profissionais">Quantidade de profissionais</label>
+            <div class="contador">
+              <button type="button" data-passo="-1" aria-label="Diminuir">−</button>
+              <input type="number" name="profissionais" id="id_profissionais" min="1" max="5000" value="{{ form.profissionais.value|default:10 }}" data-qtd>
+              <button type="button" data-passo="1" aria-label="Aumentar">+</button>
+            </div>
+            <input type="range" min="1" max="300" value="{{ form.profissionais.value|default:10 }}" data-qtd-range aria-label="Ajustar quantidade">
+          </div>
+          <div class="campo campo--largo"><span class="campo__titulo">Tipo de contrato</span><div class="chips">{% for r in form.contrato %}<label>{{ r.tag }}<span>{{ r.choice_label }}</span></label>{% endfor %}</div></div>
+          <div class="campo campo--largo"><span class="campo__titulo">Quando precisa começar?</span><div class="chips">{% for r in form.inicio %}<label>{{ r.tag }}<span>{{ r.choice_label }}</span></label>{% endfor %}</div></div>
+        </fieldset>
+
+        <fieldset class="sim__etapa" data-etapa="3" hidden>
+          <legend><span class="rotulo">Etapa 3 de 4</span>{{ etapas_sim.2|default:"Onde será a operação?" }}</legend>
+          <div class="campo campo--largo"><span class="campo__titulo">Sua organização é</span><div class="chips">{% for r in form.setor %}<label>{{ r.tag }}<span>{{ r.choice_label }}</span></label>{% endfor %}</div></div>
+          <div class="form__grade form__grade--cidade">
+            {% include "partials/campo.html" with f=form.cidade %}
+            {% include "partials/campo.html" with f=form.uf %}
+          </div>
+          {% include "partials/campo.html" with f=form.mensagem largo=1 %}
+        </fieldset>
+
+        <fieldset class="sim__etapa" data-etapa="4" hidden>
+          <legend><span class="rotulo">Etapa 4 de 4</span>{{ etapas_sim.3|default:"Para quem enviamos a proposta?" }}</legend>
+          <div class="form__grade">
+            {% include "partials/campo.html" with f=form.empresa largo=1 %}
+            {% include "partials/campo.html" with f=form.nome %}
+            {% include "partials/campo.html" with f=form.cargo %}
+            {% include "partials/campo.html" with f=form.email %}
+            {% include "partials/campo.html" with f=form.telefone %}
+            {% include "partials/aceite.html" with f=form.aceite %}
+          </div>
+        </fieldset>
+
+        <div class="sim__nav">
+          <button type="button" class="btn btn--texto" data-voltar hidden>{% icone "seta" "i i--vira" %} Voltar</button>
+          <button type="button" class="btn btn--verde" data-avancar>Continuar {% icone "seta" %}</button>
+          <button type="submit" class="btn btn--verde" data-enviar hidden>Enviar solicitação {% icone "seta" %}</button>
+        </div>
+      </div>
+
+      <aside class="sim__resumo" aria-live="polite">
+        {% include "partials/fitas.html" with classe="fitas--cartao" %}
+        <p class="rotulo rotulo--ouro">{{ S.proposta_etapas.sobretitulo|default:"Resumo do pedido" }}</p>
+        <div class="sim__total"><strong data-r-qtd>10</strong><span>profissionais</span></div>
+        <dl>
+          <div><dt>Serviços</dt><dd data-r-servicos>—</dd></div>
+          <div><dt>Contrato</dt><dd data-r-contrato>—</dd></div>
+          <div><dt>Início</dt><dd data-r-inicio>—</dd></div>
+          <div><dt>Local</dt><dd data-r-local>—</dd></div>
+        </dl>
+        {% if S.proposta_etapas.subtitulo %}<p class="sim__nota">{% icone "cadeado" %} {{ S.proposta_etapas.subtitulo }}</p>{% endif %}
+      </aside>
+    </form>
+  {% endif %}
+  </div>
+</section>
+{% with f=S.proposta_faq %}{% if perguntas and not enviada and f.ativo %}
+<section class="secao secao--areia"><div class="wrap faq-grade">
+  <div><p class="rotulo">{{ f.sobretitulo }}</p><h2 class="h2">{{ f.titulo|destacar:f.destaque }}</h2></div>
+  {% include "partials/faq.html" %}
+</div></section>
+{% endif %}{% endwith %}
+{% endblock %}

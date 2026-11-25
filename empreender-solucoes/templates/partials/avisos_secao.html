@@ -1,0 +1,19 @@
+{% load emp %}{% if avisos %}
+<div class="avisos">
+  {% for a in avisos %}
+  <article class="aviso aviso--{{ a.tipo }}" data-revela>
+    {% if a.imagem %}<img class="aviso__img" src="{{ a.imagem.url }}" alt="" loading="lazy">{% else %}<span class="aviso__ico">{% include "partials/aviso_icone.html" %}</span>{% endif %}
+    <div class="aviso__corpo">
+      <span class="rotulo">{{ a.get_tipo_display }}</span>
+      <h3>{{ a.titulo }}</h3>
+      {% if a.texto %}<div class="aviso__texto">{{ a.texto|paragrafos }}</div>{% endif %}
+      {% if a.vaga %}<ul class="meta"><li>{% icone "pin" %}{{ a.vaga.local }}</li><li>{% icone "maleta" %}{{ a.vaga.get_regime_display }}</li><li>{% icone "pessoas" %}{{ a.vaga.quantidade }} vaga{{ a.vaga.quantidade|pluralize }}</li>{% if a.vaga.prazo %}<li>{% icone "calendario" %}até {{ a.vaga.prazo|date:"d/m" }}</li>{% endif %}</ul>{% endif %}
+    </div>
+    <div class="aviso__acoes">
+      {% if a.link %}<a href="{{ a.link }}" class="btn btn--p btn--verde">{{ a.botao_texto|default:"Saiba mais" }} {% icone "seta" %}</a>{% endif %}
+      {% if a.anexo %}<a href="{{ a.anexo.url }}" target="_blank" rel="noopener" class="btn btn--p btn--contorno">{% icone "download" %} Anexo</a>{% endif %}
+    </div>
+  </article>
+  {% endfor %}
+</div>
+{% endif %}

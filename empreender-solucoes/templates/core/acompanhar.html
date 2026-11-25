@@ -1,0 +1,31 @@
+{% extends "base.html" %}
+{% load emp %}
+{% block title %}Acompanhar candidatura · {{ CFG.nome }}{% endblock %}
+{% block content %}
+{% include "partials/topo_pagina.html" with sec=S.acompanhar_topo escuro=1 atual="Acompanhar" pai="Carreiras" pai_url="/carreiras/" %}
+<section class="secao">
+  <div class="wrap estreito">
+    <form method="get" class="cartao cartao--form acompanhar" data-revela>
+      <div class="form__grade">
+        <div class="campo"><label for="id_protocolo">Protocolo</label>{{ form.protocolo }}</div>
+        <div class="campo"><label for="id_email">E-mail</label>{{ form.email }}</div>
+      </div>
+      <button class="btn btn--verde btn--bloco" type="submit">{% icone "busca" %} Consultar</button>
+    </form>
+    {% if resultado == "nao-encontrada" %}
+      <div class="vazio" role="status">{% icone "alerta" "i i--32" %}<p>Não encontramos uma candidatura com esse protocolo e e-mail. Confira os dados e tente de novo.</p></div>
+    {% elif resultado %}
+      <div class="status-cand" data-revela role="status">
+        <p class="rotulo">Protocolo {{ resultado.protocolo }}</p>
+        <h2 class="h3">{{ resultado.nome }} · {{ resultado.vaga|default:"Banco de talentos" }}</h2>
+        <ol class="linha-status">
+          {% for p in passos %}<li class="{{ p.estado }}"><span>{% if p.estado == "feito" %}{% icone "check" %}{% else %}{{ forloop.counter }}{% endif %}</span>{{ p.nome }}</li>{% endfor %}
+        </ol>
+        <p>Situação atual: <span class="selo selo--{{ resultado.status }}">{{ resultado.get_status_display }}</span></p>
+        {% if resultado.retorno %}<div class="nota">{% icone "mail" %}<div>{{ resultado.retorno|paragrafos }}</div></div>{% endif %}
+        <p class="muted">Atualizado em {{ resultado.atualizado_em|date:"d/m/Y \à\s H:i" }}</p>
+      </div>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

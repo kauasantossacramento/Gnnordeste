@@ -1,0 +1,49 @@
+/* Ajustes do painel (Unfold) com a identidade Empreender */
+.emp-dash{display:grid;gap:24px;font-family:Inter,system-ui,sans-serif}
+.emp-dash__ola{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;flex-wrap:wrap;padding:28px;border-radius:20px;background:#24483d;color:#f1ede3;position:relative;overflow:hidden}
+.emp-dash__ola::after{content:"";position:absolute;right:-40px;top:-60px;width:260px;height:260px;background:url(../img/simbolo-negativo.png) center/contain no-repeat;opacity:.12;transform:rotate(-8deg)}
+.emp-dash__ola h1{font:700 28px/1.2 Poppins,Inter,sans-serif;margin:4px 0 6px;color:#fff}
+.emp-dash__ola p{margin:0;opacity:.85}
+.emp-rotulo{font:600 11px/1 Inter,sans-serif;letter-spacing:.18em;text-transform:uppercase;color:#c5a875!important;opacity:1!important}
+.emp-dash__atalhos{display:flex;flex-wrap:wrap;gap:8px;position:relative;z-index:1}
+.emp-dash__atalhos a{display:inline-flex;align-items:center;gap:6px;padding:9px 14px;border-radius:999px;background:rgba(241,237,227,.12);color:#f1ede3;font-weight:600;font-size:13px;border:1px solid rgba(241,237,227,.2)}
+.emp-dash__atalhos a:hover{background:#c5a875;color:#1c2a24}
+.emp-dash__atalhos .material-symbols-outlined{font-size:18px}
+.emp-kpis{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:16px}
+.emp-kpi{display:grid;gap:2px;padding:20px;border-radius:18px;background:var(--color-base-50,#fff);border:1px solid rgba(36,72,61,.12);transition:transform .2s,box-shadow .2s}
+.dark .emp-kpi,.dark .emp-card{background:rgba(255,255,255,.03);border-color:rgba(255,255,255,.08)}
+.emp-kpi:hover{transform:translateY(-2px);box-shadow:0 14px 30px -18px rgba(36,72,61,.5)}
+.emp-kpi .material-symbols-outlined{width:40px;height:40px;border-radius:12px;display:grid;place-items:center;background:#24483d;color:#c5a875;margin-bottom:10px}
+.emp-kpi strong{font:800 34px/1 Poppins,sans-serif;color:#24483d}
+.dark .emp-kpi strong{color:#c5a875}
+.emp-kpi b{font-size:14px}
+.emp-kpi small{opacity:.65;font-size:12px}
+.emp-grade{display:grid;grid-template-columns:1.4fr 1fr;gap:16px}
+@media (max-width:1000px){.emp-grade{grid-template-columns:1fr}}
+.emp-card{padding:22px;border-radius:18px;background:var(--color-base-50,#fff);border:1px solid rgba(36,72,61,.12)}
+.emp-card header{display:flex;justify-content:space-between;align-items:center;margin-bottom:16px}
+.emp-card h2{font:700 16px Poppins,sans-serif}
+.emp-card header a{font-size:13px;font-weight:600;color:#24483d}
+.dark .emp-card header a{color:#c5a875}
+.emp-legenda{display:flex;gap:6px;align-items:center;font-size:12px;opacity:.75}
+.emp-legenda i{width:10px;height:10px;border-radius:3px;display:inline-block;margin-left:8px}
+.emp-legenda .p,.emp-grafico .p{background:#24483d}
+.emp-legenda .c,.emp-grafico .c{background:#c5a875}
+.dark .emp-grafico .p,.dark .emp-legenda .p{background:#5f8f7f}
+.emp-grafico{display:grid;grid-template-columns:repeat(14,1fr);gap:6px;align-items:end;height:180px}
+.emp-grafico__dia{display:flex;flex-direction:column;align-items:center;gap:6px;height:100%}
+.emp-grafico__barras{flex:1;width:100%;display:flex;align-items:flex-end;justify-content:center;gap:2px;border-bottom:1px solid rgba(36,72,61,.15)}
+.emp-grafico__barras span{width:42%;min-height:2px;border-radius:4px 4px 0 0}
+.emp-grafico small{font-size:10px;opacity:.6;white-space:nowrap}
+.emp-funil{display:grid;gap:8px;margin:0;padding:0;list-style:none}
+.emp-funil li{display:flex;justify-content:space-between;padding:10px 14px;border-radius:12px;background:rgba(36,72,61,.06)}
+.emp-funil b{font-family:Poppins,sans-serif}
+.emp-alerta{display:flex;gap:8px;align-items:center;margin-top:14px;padding:12px 14px;border-radius:12px;background:#fdf3e1;color:#7a5a1d;font-weight:600;font-size:13px}
+.emp-tabela{width:100%;border-collapse:collapse}
+.emp-tabela td{padding:10px 6px;border-top:1px solid rgba(36,72,61,.08);font-size:13px;vertical-align:middle}
+.emp-tabela small{display:block;opacity:.6}
+.emp-vazio{opacity:.6;text-align:center;padding:24px!important}
+.emp-status{display:inline-block;padding:3px 10px;border-radius:999px;font-size:11px;font-weight:600;background:rgba(36,72,61,.1);white-space:nowrap}
+.emp-status--nova,.emp-status--recebida{background:#fde2dd;color:#9c2f1c}
+.emp-status--contato,.emp-status--triagem,.emp-status--entrevista{background:#fdf0d5;color:#7a5a1d}
+.emp-status--fechada,.emp-status--aprovada{background:#d9efe5;color:#1d5c44}

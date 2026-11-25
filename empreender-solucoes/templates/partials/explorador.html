@@ -1,0 +1,28 @@
+{% load emp %}
+<div class="explorador" data-explorador>
+  <div class="explorador__abas" role="tablist" aria-label="Serviços">
+    {% for sv in servicos %}
+    <button type="button" role="tab" id="aba-{{ sv.pk }}" aria-controls="painel-{{ sv.pk }}" aria-selected="{% if forloop.first %}true{% else %}false{% endif %}" {% if not forloop.first %}tabindex="-1"{% endif %} class="explorador__aba">
+      <span class="explorador__n">{{ forloop.counter|stringformat:"02d" }}</span>
+      <span class="explorador__nome">{{ sv.titulo }}</span>
+      {% icone "seta" %}
+    </button>
+    {% endfor %}
+  </div>
+  <div class="explorador__paineis">
+    {% for sv in servicos %}
+    <div class="explorador__painel" role="tabpanel" id="painel-{{ sv.pk }}" aria-labelledby="aba-{{ sv.pk }}" {% if not forloop.first %}hidden{% endif %}>
+      <div class="explorador__topo">
+        <span class="explorador__ico">{% icone sv.icone "i i--40" %}</span>
+        <div><h3>{{ sv.titulo }}</h3><p>{{ sv.resumo }}</p></div>
+      </div>
+      {% if sv.lista_inclui %}<p class="rotulo">O que inclui</p><ul class="checks">{% for i in sv.lista_inclui %}<li>{% icone "check" %}{{ i }}</li>{% endfor %}</ul>{% endif %}
+      {% if sv.lista_perfis %}<p class="rotulo">Perfis profissionais</p><div class="tags">{% for p in sv.lista_perfis %}<span>{{ p }}</span>{% endfor %}</div>{% endif %}
+      <div class="linha-btns">
+        <a href="{% url 'core:proposta' %}?servico={{ sv.pk }}" class="btn btn--verde btn--p">Solicitar proposta {% icone "seta" %}</a>
+        <a href="{{ sv.get_absolute_url }}" class="btn btn--texto btn--p">Detalhes do serviço {% icone "seta-diag" %}</a>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</div>

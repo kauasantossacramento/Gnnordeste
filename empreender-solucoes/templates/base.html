@@ -1,0 +1,192 @@
+{% load static emp %}<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <title>{% block title %}{{ CFG.nome }} · Mão de obra e apoio administrativo{% endblock %}</title>
+  <meta name="description" content="{% block description %}{{ CFG.meta_descricao }}{% endblock %}">
+  <link rel="canonical" href="{% url_absoluta request.path %}">
+  <meta name="theme-color" content="#24483d">
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="pt_BR">
+  <meta property="og:site_name" content="{{ CFG.nome }}">
+  <meta property="og:title" content="{% block og_title %}{{ CFG.nome }}{% endblock %}">
+  <meta property="og:description" content="{% block og_description %}{{ CFG.meta_descricao }}{% endblock %}">
+  <meta property="og:url" content="{% url_absoluta request.path %}">
+  <meta property="og:image" content="{% block og_image %}{% url_absoluta MARCA.og %}{% endblock %}">
+  <meta name="twitter:card" content="summary_large_image">
+  <link rel="icon" type="image/png" sizes="32x32" href="{{ MARCA.favicon }}">
+  <link rel="apple-touch-icon" href="{{ MARCA.favicon }}">
+  <link rel="preload" href="{% static 'fonts/poppins-latin-800-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="preload" href="{% static 'fonts/inter-latin-400-normal.woff2' %}" as="font" type="font/woff2" crossorigin>
+  <link rel="stylesheet" href="{% static 'css/site.css' %}">
+  {% org_jsonld %}
+  {% block jsonld %}{% endblock %}
+  {% if CFG.google_analytics %}
+  <script>window.GA_ID="{{ CFG.google_analytics|escapejs }}";</script>
+  {% endif %}
+</head>
+<body class="r-{{ ROTA|default:'outra' }} {% block body_class %}{% endblock %}" style="--simbolo-neg:url('{{ MARCA.simbolo_negativo }}')">
+{% include "partials/icones.html" %}
+<a class="pular" href="#conteudo">Pular para o conteúdo</a>
+
+{% for a in AVISOS_FAIXA %}
+<div class="faixa faixa--{{ a.tipo }}" data-faixa="{{ a.chave }}">
+  <div class="wrap faixa__in">
+    <span class="faixa__tag">{% include "partials/aviso_icone.html" %}{{ a.get_tipo_display }}</span>
+    <p><strong>{{ a.titulo }}</strong>{% if a.texto %} <span>{{ a.texto|truncatechars:120 }}</span>{% endif %}</p>
+    {% if a.link %}<a href="{{ a.link }}">{{ a.botao_texto|default:"Saiba mais" }} {% icone "seta" %}</a>{% endif %}
+    <button type="button" class="faixa__x" aria-label="Fechar aviso">{% icone "x" %}</button>
+  </div>
+</div>
+{% endfor %}
+
+<header class="topo" id="topo">
+  <div class="topo__barra">
+    <a href="{% url 'core:home' %}" class="topo__logo" aria-label="{{ CFG.nome }} — página inicial">
+      <img src="{{ MARCA.logo }}" alt="{{ CFG.nome }}" width="180" height="58">
+    </a>
+    <nav class="menu" aria-label="Principal">
+      <a href="{% url 'core:sobre' %}" {% if LOCAL == 'sobre' %}aria-current="page"{% endif %}>A empresa</a>
+      <div class="menu__drop">
+        <a href="{% url 'core:servicos' %}" {% if LOCAL == 'servicos' %}aria-current="page"{% endif %}>Serviços</a>
+        {% if MENU_SERVICOS %}
+        <div class="menu__painel">
+          {% for s in MENU_SERVICOS %}<a href="{{ s.get_absolute_url }}">{% icone s.icone "i i--32" %}<span><b>{{ s.titulo }}</b><small>{{ s.resumo|truncatechars:60 }}</small></span></a>{% endfor %}
+        </div>
+        {% endif %}
+      </div>
+      <a href="{% url 'core:carreiras' %}" {% if LOCAL == 'carreiras' %}aria-current="page"{% endif %}>Carreiras</a>
+      <a href="{% url 'core:conteudos' %}" {% if LOCAL == 'conteudos' %}aria-current="page"{% endif %}>Conteúdos</a>
+      <a href="{% url 'core:contato' %}" {% if LOCAL == 'contato' %}aria-current="page"{% endif %}>Contato</a>
+    </nav>
+    <a href="{% url 'core:proposta' %}" class="btn btn--verde btn--p topo__cta">Monte sua equipe</a>
+    <button class="topo__burger" type="button" aria-expanded="false" aria-controls="gaveta" aria-label="Abrir menu"><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="gaveta" id="gaveta" hidden>
+  <img class="gaveta__marca" src="{{ MARCA.simbolo_negativo }}" alt="" aria-hidden="true">
+  <nav aria-label="Menu" class="gaveta__nav">
+    <a href="{% url 'core:home' %}"><small>01</small>Início</a>
+    <a href="{% url 'core:sobre' %}"><small>02</small>A empresa</a>
+    <a href="{% url 'core:servicos' %}"><small>03</small>Serviços</a>
+    <a href="{% url 'core:carreiras' %}"><small>04</small>Carreiras</a>
+    <a href="{% url 'core:conteudos' %}"><small>05</small>Conteúdos</a>
+    <a href="{% url 'core:contato' %}"><small>06</small>Contato</a>
+  </nav>
+  <a href="{% url 'core:proposta' %}" class="btn btn--ouro">Monte sua equipe {% icone "seta" %}</a>
+  <div class="gaveta__info">
+    {% if CFG.telefone %}<a href="tel:{{ CFG.telefone_link }}">{% icone "tel" %} {{ CFG.telefone }}</a>{% endif %}
+    {% if CFG.email %}<a href="mailto:{{ CFG.email }}">{% icone "mail" %} {{ CFG.email }}</a>{% endif %}
+  </div>
+</div>
+
+<main id="conteudo">
+  {% if messages %}<div class="toasts" role="status">{% for m in messages %}<div class="toast toast--{{ m.tags }}">{% if m.tags == 'success' %}{% icone "check" %}{% else %}{% icone "alerta" %}{% endif %}<span>{{ m }}</span></div>{% endfor %}</div>{% endif %}
+  {% block content %}{% endblock %}
+</main>
+
+<footer class="rodape">
+  <div class="wrap">
+    {% with r=S.geral_rodape %}{% if r.ativo %}
+    <div class="rodape__cta">
+      {% if r.sobretitulo %}<p class="rotulo rotulo--ouro">{{ r.sobretitulo }}</p>{% endif %}
+      <h2>{{ r.titulo|destacar:r.destaque }}</h2>
+      <div class="linha-btns">
+        {% if r.botao_texto %}<a href="{{ r.botao_link }}" class="btn btn--ouro">{{ r.botao_texto }} {% icone "seta" %}</a>{% endif %}
+        {% if r.botao2_texto %}<a href="{{ r.botao2_link }}" class="btn btn--contorno-claro">{{ r.botao2_texto }}</a>{% endif %}
+      </div>
+    </div>
+    {% endif %}{% endwith %}
+    <div class="rodape__grade">
+      <div class="rodape__marca">
+        <img src="{{ MARCA.logo_negativa }}" alt="{{ CFG.nome }}" width="220" height="71" loading="lazy">
+        <p>{{ CFG.descricao_curta }}</p>
+        {% if CFG.redes %}<div class="redes">{% for n, u in CFG.redes %}<a href="{{ u }}" target="_blank" rel="noopener" aria-label="{{ n|title }}">{% icone n %}</a>{% endfor %}</div>{% endif %}
+      </div>
+      <div>
+        <h3>Empresa</h3>
+        <ul>
+          <li><a href="{% url 'core:sobre' %}">A empresa</a></li>
+          <li><a href="{% url 'core:servicos' %}">Serviços</a></li>
+          <li><a href="{% url 'core:carreiras' %}">Carreiras</a></li>
+          <li><a href="{% url 'core:acompanhar' %}">Acompanhar candidatura</a></li>
+          <li><a href="{% url 'core:conteudos' %}">Conteúdos</a></li>
+        </ul>
+      </div>
+      <div>
+        <h3>Serviços</h3>
+        <ul>{% for s in MENU_SERVICOS|slice:":6" %}<li><a href="{{ s.get_absolute_url }}">{{ s.titulo }}</a></li>{% endfor %}</ul>
+      </div>
+      <div>
+        <h3>Atendimento</h3>
+        <ul class="rodape__contato">
+          {% if CFG.telefone %}<li>{% icone "tel" %}<a href="tel:{{ CFG.telefone_link }}">{{ CFG.telefone }}</a></li>{% endif %}
+          {% if CFG.email %}<li>{% icone "mail" %}<a href="mailto:{{ CFG.email }}">{{ CFG.email }}</a></li>{% endif %}
+          {% if CFG.endereco %}<li>{% icone "pin" %}<span>{{ CFG.endereco }}{% if CFG.cidade %} · {{ CFG.cidade }}/{{ CFG.uf }}{% endif %}</span></li>{% endif %}
+          {% if CFG.horario %}<li>{% icone "relogio" %}<span>{{ CFG.horario }}</span></li>{% endif %}
+          <li>{% icone "mail" %}<a href="{% url 'core:contato' %}">Formulário de contato</a></li>
+        </ul>
+      </div>
+    </div>
+    <div class="rodape__base">
+      <span>© {% now "Y" %} {{ CFG.nome }}{% if CFG.cnpj %} · CNPJ {{ CFG.cnpj }}{% endif %}</span>
+      <span class="rodape__links">{% for p in PAGINAS_RODAPE %}<a href="{{ p.get_absolute_url }}">{{ p.titulo }}</a>{% endfor %}<button type="button" data-cookies-abrir>Preferências de cookies</button></span>
+    </div>
+  </div>
+  <img class="rodape__simbolo" src="{{ MARCA.simbolo_negativo }}" alt="" aria-hidden="true" loading="lazy">
+</footer>
+
+{% if CFG.whatsapp %}
+<a class="zap" href="https://wa.me/{{ CFG.whatsapp }}" target="_blank" rel="noopener" aria-label="Conversar pelo WhatsApp">{% icone "whatsapp" %}</a>
+{% endif %}
+
+{% for a in AVISOS_FLUTUANTE %}
+<aside class="flutuante flutuante--{{ a.tipo }}" data-aviso="{{ a.chave }}" data-freq="{{ a.frequencia }}" hidden aria-label="Aviso">
+  <button type="button" class="flutuante__x" data-fechar aria-label="Fechar">{% icone "x" %}</button>
+  {% if a.imagem %}<img src="{{ a.imagem.url }}" alt="" class="flutuante__img">{% endif %}
+  <div>
+    <span class="selo selo--{{ a.tipo }}">{% include "partials/aviso_icone.html" %}{{ a.get_tipo_display }}</span>
+    <strong>{{ a.titulo }}</strong>
+    {% if a.texto %}<p>{{ a.texto|truncatechars:140 }}</p>{% endif %}
+    {% if a.link %}<a href="{{ a.link }}" class="link-seta">{{ a.botao_texto|default:"Saiba mais" }} {% icone "seta" %}</a>{% endif %}
+  </div>
+</aside>
+{% endfor %}
+
+{% for a in AVISOS_MODAL %}
+<div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-{{ a.pk }}" data-aviso="{{ a.chave }}" data-freq="{{ a.frequencia }}" hidden>
+  <div class="modal__fundo" data-fechar></div>
+  <div class="modal__caixa{% if a.imagem %} modal__caixa--img{% endif %}">
+    {% if a.imagem %}<div class="modal__img"><img src="{{ a.imagem.url }}" alt=""></div>{% endif %}
+    <div class="modal__corpo">
+      <button type="button" class="modal__x" data-fechar aria-label="Fechar">{% icone "x" %}</button>
+      <span class="selo selo--{{ a.tipo }}">{% include "partials/aviso_icone.html" %}{{ a.get_tipo_display }}</span>
+      <h2 id="modal-{{ a.pk }}">{{ a.titulo }}</h2>
+      {% if a.texto %}<div class="modal__texto">{{ a.texto|paragrafos }}</div>{% endif %}
+      {% if a.vaga %}<ul class="meta">
+        <li>{% icone "pin" %}{{ a.vaga.local }}</li><li>{% icone "maleta" %}{{ a.vaga.get_regime_display }}</li>
+        <li>{% icone "pessoas" %}{{ a.vaga.quantidade }} vaga{{ a.vaga.quantidade|pluralize }}</li>
+        {% if a.vaga.prazo %}<li>{% icone "calendario" %}até {{ a.vaga.prazo|date:"d/m" }}</li>{% endif %}
+      </ul>{% endif %}
+      <div class="linha-btns">
+        {% if a.link %}<a href="{{ a.link }}" class="btn btn--verde">{{ a.botao_texto|default:"Saiba mais" }} {% icone "seta" %}</a>{% endif %}
+        {% if a.anexo %}<a href="{{ a.anexo.url }}" target="_blank" rel="noopener" class="btn btn--contorno">{% icone "download" %} Anexo</a>{% endif %}
+        <button type="button" class="btn btn--texto" data-fechar>Agora não</button>
+      </div>
+    </div>
+  </div>
+</div>
+{% endfor %}
+
+<div class="cookies" data-cookies hidden>
+  {% icone "cadeado" "i i--24" %}
+  <p>{{ CFG.texto_cookies }} {% for p in PAGINAS_RODAPE|slice:":1" %}<a href="{{ p.get_absolute_url }}">Saiba mais</a>{% endfor %}</p>
+  <div class="linha-btns"><button type="button" class="btn btn--p btn--contorno" data-cookies-resp="essenciais">Só essenciais</button><button type="button" class="btn btn--p btn--verde" data-cookies-resp="todos">Aceitar</button></div>
+</div>
+
+<script src="{% static 'js/site.js' %}" defer></script>
+{% block scripts %}{% endblock %}
+</body>
+</html>

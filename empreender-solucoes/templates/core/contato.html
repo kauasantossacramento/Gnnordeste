@@ -1,0 +1,40 @@
+{% extends "base.html" %}
+{% load emp %}
+{% block title %}Contato · {{ CFG.nome }}{% endblock %}
+{% block jsonld %}{% faq_jsonld perguntas %}{% endblock %}
+{% block content %}
+{% include "partials/topo_pagina.html" with sec=S.contato_topo %}
+{% avisos "contato" %}
+<section class="secao">
+  <div class="wrap duas-col duas-col--contato">
+    <div>
+      <div class="canais">
+        {% with c=S.contato_canais %}
+        {% if c.botao_texto %}<a class="canal canal--destaque" href="{{ c.botao_link }}" data-revela>{% icone "pessoas" "i i--32" %}<span><b>{{ c.botao_texto }}</b><small>{{ c.lista.0 }}</small></span>{% icone "seta" %}</a>{% endif %}
+        {% if c.botao2_texto %}<a class="canal" href="{{ c.botao2_link }}" data-revela>{% icone "maleta" "i i--32" %}<span><b>{{ c.botao2_texto }}</b><small>{{ c.lista.1 }}</small></span>{% icone "seta" %}</a>{% endif %}
+        {% endwith %}
+        {% if CFG.whatsapp %}<a class="canal" href="https://wa.me/{{ CFG.whatsapp }}" target="_blank" rel="noopener" data-revela>{% icone "whatsapp" "i i--32" %}<span><b>WhatsApp</b><small>Resposta rápida</small></span>{% icone "seta" %}</a>{% endif %}
+        {% if CFG.telefone %}<a class="canal" href="tel:{{ CFG.telefone_link }}" data-revela>{% icone "tel" "i i--32" %}<span><b>{{ CFG.telefone }}</b><small>{{ CFG.horario }}</small></span>{% icone "seta" %}</a>{% endif %}
+        {% if CFG.email %}<a class="canal" href="mailto:{{ CFG.email }}" data-revela>{% icone "mail" "i i--32" %}<span><b>{{ CFG.email }}</b><small>E-mail</small></span>{% icone "seta" %}</a>{% endif %}
+      </div>
+      {% if CFG.endereco %}<div class="mapa" data-revela><iframe title="Mapa" loading="lazy" referrerpolicy="no-referrer-when-downgrade" src="{% if CFG.mapa_embed %}{{ CFG.mapa_embed }}{% else %}https://www.google.com/maps?q={{ CFG.endereco|urlencode }}&output=embed{% endif %}"></iframe></div>{% endif %}
+    </div>
+    <div class="cartao cartao--form" data-revela="dir">
+      <h2 class="h3">{{ S.contato_canais.titulo|default:"Envie uma mensagem" }}</h2>
+      <form method="post" class="form" novalidate data-form>
+        {% csrf_token %}<div class="pote" aria-hidden="true">{{ form.website }}</div>
+        <div class="form__grade">
+          <div class="campo campo--largo"><span class="campo__titulo">Assunto</span><div class="chips">{% for r in form.assunto %}<label>{{ r.tag }}<span>{{ r.choice_label }}</span></label>{% endfor %}</div></div>
+          {% include "partials/campo.html" with f=form.nome largo=1 %}
+          {% include "partials/campo.html" with f=form.email %}
+          {% include "partials/campo.html" with f=form.telefone %}
+          {% include "partials/campo.html" with f=form.mensagem largo=1 %}
+          {% include "partials/aceite.html" with f=form.aceite %}
+        </div>
+        <button class="btn btn--verde btn--bloco" type="submit">Enviar mensagem {% icone "seta" %}</button>
+      </form>
+    </div>
+  </div>
+</section>
+{% with f=S.contato_faq %}{% if perguntas and f.ativo %}<section class="secao secao--areia"><div class="wrap faq-grade"><div><p class="rotulo">{{ f.sobretitulo }}</p><h2 class="h2">{{ f.titulo|destacar:f.destaque }}</h2></div>{% include "partials/faq.html" %}</div></section>{% endif %}{% endwith %}
+{% endblock %}

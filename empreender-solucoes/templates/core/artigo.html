@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load emp %}
+{% block title %}{{ a.titulo }} · {{ CFG.nome }}{% endblock %}
+{% block description %}{{ a.resumo }}{% endblock %}
+{% block og_title %}{{ a.titulo }}{% endblock %}
+{% block jsonld %}{% url_absoluta a.get_absolute_url as u %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"Article","headline":"{{ a.titulo|escapejs }}","description":"{{ a.resumo|escapejs }}","datePublished":"{{ a.data|date:'c' }}","mainEntityOfPage":"{{ u|escapejs }}","publisher":{"@type":"Organization","name":"{{ CFG.nome|escapejs }}"}}</script>{% endblock %}
+{% block content %}
+{% include "partials/topo_pagina.html" with sec=S.conteudos_topo titulo=a.titulo sub=a.resumo atual=a.get_categoria_display pai="Conteúdos" pai_url="/conteudos/" %}
+<section class="secao"><div class="wrap estreito">
+  <p class="artigo-card__meta"><span class="selo">{{ a.get_categoria_display }}</span><time datetime="{{ a.data|date:'c' }}">{{ a.data|date:"d \d\e F \d\e Y" }}</time><span>· {{ a.leitura }} min de leitura</span></p>
+  {% if a.capa %}<img class="artigo__capa" src="{{ a.capa.url }}" alt="">{% endif %}
+  <div class="prosa prosa--artigo">{{ a.conteudo|paragrafos }}</div>
+  <a href="{% url 'core:conteudos' %}" class="btn btn--contorno">← Todos os conteúdos</a>
+</div></section>
+{% if outros %}<section class="secao secao--areia"><div class="wrap"><div class="cabeca"><h2 class="h2">Leia também</h2></div><div class="artigos">{% for a in outros %}{% include "partials/artigo_card.html" %}{% endfor %}</div></div></section>{% endif %}
+{% endblock %}

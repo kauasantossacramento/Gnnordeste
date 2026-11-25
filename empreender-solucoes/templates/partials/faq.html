@@ -1,0 +1,9 @@
+{% load emp %}
+<div class="faq">
+  {% for p in perguntas %}
+  <details class="faq__item" data-revela style="--i:{{ forloop.counter0 }}" {% if forloop.first %}open{% endif %}>
+    <summary><span>{{ p.pergunta }}</span><i aria-hidden="true">{% icone "mais" %}</i></summary>
+    <div class="faq__resp">{{ p.resposta|paragrafos }}</div>
+  </details>
+  {% endfor %}
+</div>

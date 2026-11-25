@@ -1,0 +1,197 @@
+{% extends "base.html" %}
+{% load static emp %}
+{% block jsonld %}{% faq_jsonld perguntas %}{% endblock %}
+
+{% block content %}
+{# ================================================================ HERO #}
+{% with h=S.home_hero %}
+<section class="hero">
+  <div class="wrap hero__grade">
+    <div class="hero__texto">
+      {% if h.sobretitulo %}<p class="rotulo hero__in" style="--d:.05s">{{ h.sobretitulo }}</p>{% endif %}
+      <h1 class="hero__titulo">
+        {% for linha in h.lista %}<span class="hero__linha"><span style="--d:{{ forloop.counter0 }}00ms">{% if forloop.last %}<em>{{ linha }}</em>{% else %}{{ linha }}{% endif %}</span></span>{% empty %}{{ h.titulo|destacar:h.destaque }}{% endfor %}
+      </h1>
+      <p class="hero__sub hero__in" style="--d:.45s">{{ h.subtitulo }}</p>
+      <div class="linha-btns hero__in" style="--d:.6s">
+        <a href="{{ h.botao_link|default:'/monte-sua-equipe/' }}" class="btn btn--verde btn--g">{{ h.botao_texto|default:"Monte sua equipe" }} {% icone "seta" %}</a>
+        {% if h.botao2_texto %}<a href="{{ h.botao2_link }}" class="btn btn--texto btn--g">{{ h.botao2_texto }} {% icone "seta-diag" %}</a>{% endif %}
+      </div>
+    </div>
+
+    {% with pn=S.home_hero_painel %}
+    <div class="hero__palco">
+      <div class="palco">
+        {% include "partials/fitas.html" with classe="palco__fitas" %}
+        <img class="palco__simbolo" src="{{ MARCA.simbolo_negativo }}" alt="" width="226" height="300">
+        <div class="palco__ticker" aria-label="Serviços">
+          <span class="rotulo rotulo--ouro">{{ pn.sobretitulo|default:"Soluções em" }}</span>
+          <div class="ticker"><ul>{% for s in servicos %}<li>{{ s.titulo }}</li>{% endfor %}{% for s in servicos|slice:":1" %}<li aria-hidden="true">{{ s.titulo }}</li>{% endfor %}</ul></div>
+        </div>
+      </div>
+      <form class="mini-sim" action="{% url 'core:proposta' %}" method="get" data-mini-sim>
+        <label for="mini-n">{{ pn.titulo|default:"Quantos profissionais você precisa?" }}</label>
+        <div class="mini-sim__linha">
+          <output for="mini-n" data-saida>10</output>
+          <input id="mini-n" type="range" name="profissionais" min="1" max="200" value="10" data-faixa-range>
+        </div>
+        <button class="btn btn--p btn--verde" type="submit">{{ pn.botao_texto|default:"Montar proposta" }} {% icone "seta" %}</button>
+      </form>
+    </div>
+    {% endwith %}
+  </div>
+</section>
+{% endwith %}
+
+{% avisos "home" %}
+
+{# ================================================================ SEGMENTOS (letreiro) #}
+{% if segmentos %}
+<div class="letreiro" aria-label="Segmentos atendidos">
+  <div class="letreiro__trilho">{% for _ in "12" %}{% for s in segmentos %}<span>{% icone s.icone "i i--24" %}{{ s.titulo }}</span>{% endfor %}{% endfor %}</div>
+</div>
+{% endif %}
+
+{# ================================================================ PILARES #}
+{% with s=S.home_pilares %}{% if s.ativo and pilares %}
+<section class="secao secao--verde">
+  {% include "partials/fitas.html" with classe="fitas--fundo" %}
+  <div class="wrap">
+    <div class="cabeca cabeca--dupla">
+      <div><p class="rotulo rotulo--ouro" data-revela>{{ s.sobretitulo }}</p><h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2></div>
+      <div class="cabeca__texto" data-revela>{{ s.texto|paragrafos }}</div>
+    </div>
+    <div class="pilares">
+      {% for p in pilares %}<div class="pilar" data-revela style="--i:{{ forloop.counter0 }}"><span class="pilar__n">{{ forloop.counter|stringformat:"02d" }}</span><h3>{{ p.titulo }}</h3><p>{{ p.texto }}</p></div>{% endfor %}
+    </div>
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{# ================================================================ SERVIÇOS (explorador) #}
+{% with s=S.home_servicos %}{% if s.ativo and servicos %}
+<section class="secao" id="servicos">
+  <div class="wrap">
+    <div class="cabeca cabeca--dupla">
+      <div><p class="rotulo" data-revela>{{ s.sobretitulo }}</p><h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2></div>
+      <p class="cabeca__texto" data-revela>{{ s.subtitulo }}</p>
+    </div>
+    {% include "partials/explorador.html" %}
+    {% avisos "home-servicos" %}
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{# ================================================================ PROCESSO #}
+{% with s=S.home_processo %}{% if s.ativo and etapas %}
+<section class="secao secao--areia">
+  <div class="wrap">
+    <div class="cabeca cabeca--centro"><p class="rotulo" data-revela>{{ s.sobretitulo }}</p><h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2>{% if s.subtitulo %}<p data-revela>{{ s.subtitulo }}</p>{% endif %}</div>
+    {% include "partials/processo.html" %}
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{# ================================================================ SEGMENTOS #}
+{% with s=S.home_segmentos %}{% if s.ativo and segmentos %}
+<section class="secao">
+  <div class="wrap segmentos">
+    <div class="segmentos__intro">
+      <p class="rotulo" data-revela>{{ s.sobretitulo }}</p>
+      <h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2>
+      <div data-revela>{{ s.texto|paragrafos }}</div>
+      {% if numeros %}<div class="numeros">{% for n in numeros %}<div data-revela style="--i:{{ forloop.counter0 }}"><strong>{{ n.prefixo }}<span data-conta="{{ n.valor }}">0</span>{{ n.sufixo }}</strong><span>{{ n.rotulo }}</span></div>{% endfor %}</div>{% endif %}
+    </div>
+    <ul class="segmentos__lista">
+      {% for g in segmentos %}<li data-revela style="--i:{{ forloop.counter0 }}"><span class="segmentos__ico">{% icone g.icone "i i--32" %}</span><div><h3>{{ g.titulo }}</h3><p>{{ g.texto }}</p></div></li>{% endfor %}
+    </ul>
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{# ================================================================ SIMULADOR (chamada) #}
+{% with s=S.home_simulador %}{% if s.ativo %}
+<section class="secao secao--curta">
+  <div class="wrap">
+    <form class="chamada-sim" action="{% url 'core:proposta' %}" method="get" data-revela data-mini-sim>
+      {% include "partials/fitas.html" with classe="fitas--chamada" %}
+      <div class="chamada-sim__texto">
+        <p class="rotulo rotulo--ouro">{{ s.sobretitulo }}</p>
+        <h2>{{ s.titulo|destacar:s.destaque }}</h2>
+        <p>{{ s.subtitulo }}</p>
+      </div>
+      <div class="chamada-sim__controles">
+        <fieldset class="chips chips--claro"><legend>Serviços</legend>
+          {% for sv in servicos %}<label><input type="checkbox" name="servico" value="{{ sv.pk }}"><span>{{ sv.titulo }}</span></label>{% endfor %}
+        </fieldset>
+        <label class="chamada-sim__n" for="sim-n">Profissionais: <output data-saida>25</output></label>
+        <input id="sim-n" type="range" name="profissionais" min="1" max="300" value="25" data-faixa-range>
+        <button type="submit" class="btn btn--ouro">{{ s.botao_texto|default:"Continuar" }} {% icone "seta" %}</button>
+      </div>
+    </form>
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{# ================================================================ CARREIRAS #}
+{% with s=S.home_carreiras %}{% if s.ativo %}
+<section class="secao" id="carreiras">
+  <div class="wrap carreiras-home">
+    <div class="carreiras-home__texto">
+      <p class="rotulo" data-revela>{{ s.sobretitulo }}</p>
+      <h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2>
+      <div data-revela>{{ s.texto|paragrafos }}</div>
+      <div class="linha-btns" data-revela>
+        {% if s.botao_texto %}<a href="{{ s.botao_link }}" class="btn btn--verde">{{ s.botao_texto }} {% icone "seta" %}</a>{% endif %}
+        {% if s.botao2_texto %}<a href="{{ s.botao2_link }}" class="btn btn--texto">{{ s.botao2_texto }} {% icone "seta-diag" %}</a>{% endif %}
+      </div>
+    </div>
+    <div class="carreiras-home__vagas">
+      <div class="carreiras-home__topo" data-revela><span class="ao-vivo"></span><b>{{ total_vagas }}</b> vaga{{ total_vagas|pluralize }} aberta{{ total_vagas|pluralize }}</div>
+      {% for v in vagas %}{% include "partials/vaga_linha.html" %}{% empty %}
+      <div class="vazio" data-revela>{% icone "maleta" "i i--32" %}<p>{{ S.carreiras_vagas.texto|default:"Nenhuma vaga aberta no momento." }}</p></div>{% endfor %}
+      {% if total_vagas > vagas|length %}<a class="link-seta" href="{% url 'core:carreiras' %}">Ver todas as vagas {% icone "seta" %}</a>{% endif %}
+    </div>
+  </div>
+  <div class="wrap">{% avisos "home-carreiras" %}</div>
+</section>
+{% endif %}{% endwith %}
+
+{# ================================================================ DEPOIMENTOS / CLIENTES #}
+{% if clientes and S.home_clientes.ativo %}
+<section class="secao secao--curta"><div class="wrap"><p class="rotulo rotulo--centro">{{ S.home_clientes.titulo }}</p>
+  <div class="clientes">{% for c in clientes %}{% if c.link %}<a href="{{ c.link }}" target="_blank" rel="noopener">{% endif %}<img src="{{ c.logo.url }}" alt="{{ c.nome }}" loading="lazy">{% if c.link %}</a>{% endif %}{% endfor %}</div>
+</div></section>
+{% endif %}
+{% with s=S.home_depoimentos %}{% if depoimentos and s.ativo %}
+<section class="secao secao--areia"><div class="wrap">
+  <div class="cabeca cabeca--centro"><p class="rotulo">{{ s.sobretitulo }}</p><h2 class="h2">{{ s.titulo|destacar:s.destaque }}</h2></div>
+  <div class="depoimentos" data-carrossel>{% for d in depoimentos %}
+    <figure class="depoimento">{% icone "aspas" "i i--32" %}<blockquote>{{ d.texto }}</blockquote>
+      <figcaption>{% if d.foto %}<img src="{{ d.foto.url }}" alt="" loading="lazy">{% endif %}<span><b>{{ d.nome }}</b>{{ d.cargo }}{% if d.empresa %} · {{ d.empresa }}{% endif %}</span></figcaption></figure>{% endfor %}
+  </div>
+</div></section>
+{% endif %}{% endwith %}
+
+{# ================================================================ FAQ #}
+{% with s=S.home_faq %}{% if s.ativo and perguntas %}
+<section class="secao">
+  <div class="wrap faq-grade">
+    <div><p class="rotulo" data-revela>{{ s.sobretitulo }}</p><h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2><p data-revela>{{ s.subtitulo }}</p>
+      {% if s.botao_texto %}<a href="{{ s.botao_link }}" class="btn btn--contorno" data-revela>{{ s.botao_texto }}</a>{% endif %}</div>
+    {% include "partials/faq.html" %}
+  </div>
+</section>
+{% endif %}{% endwith %}
+
+{# ================================================================ CONTEÚDOS #}
+{% with s=S.home_conteudos %}{% if artigos and s.ativo %}
+<section class="secao secao--areia">
+  <div class="wrap">
+    <div class="cabeca cabeca--dupla"><div><p class="rotulo">{{ s.sobretitulo }}</p><h2 class="h2">{{ s.titulo|destacar:s.destaque }}</h2></div>
+      {% if s.botao_texto %}<a href="{{ s.botao_link }}" class="link-seta">{{ s.botao_texto }} {% icone "seta" %}</a>{% endif %}</div>
+    <div class="artigos">{% for a in artigos %}{% include "partials/artigo_card.html" %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}{% endwith %}
+{% endblock %}

@@ -1,0 +1,10 @@
+<ol class="processo" data-processo style="--n:{{ etapas|length }}">
+  <li class="processo__trilho" aria-hidden="true"><span></span></li>
+  {% for e in etapas %}
+  <li class="etapa" data-revela style="--i:{{ forloop.counter0 }}">
+    <span class="etapa__marco">{{ forloop.counter }}</span>
+    <h3>{{ e.titulo }}</h3>
+    <p>{{ e.texto }}</p>
+  </li>
+  {% endfor %}
+</ol>

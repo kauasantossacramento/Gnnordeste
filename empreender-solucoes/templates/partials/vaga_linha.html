@@ -1,0 +1,9 @@
+{% load emp %}
+<a href="{{ v.get_absolute_url }}" class="vaga-linha" data-revela data-cidade="{{ v.local }}" data-area="{{ v.area.titulo|default:'' }}" data-busca="{{ v.titulo|lower }} {{ v.cidade|lower }} {{ v.area.titulo|default:''|lower }}">
+  <div class="vaga-linha__info">
+    <div class="vaga-linha__selos"><span class="selo">{{ v.get_regime_display }}</span>{% if v.nova %}<span class="selo selo--novidade">Nova</span>{% endif %}{% if v.modalidade != 'presencial' %}<span class="selo">{{ v.get_modalidade_display }}</span>{% endif %}</div>
+    <h3>{{ v.titulo }}</h3>
+    <ul class="meta"><li>{% icone "pin" %}{{ v.local }}</li><li>{% icone "pessoas" %}{{ v.quantidade }} vaga{{ v.quantidade|pluralize }}</li>{% if v.prazo %}<li>{% icone "calendario" %}até {{ v.prazo|date:"d/m/Y" }}</li>{% endif %}</ul>
+  </div>
+  <span class="vaga-linha__ir" aria-hidden="true">{% icone "seta-diag" %}</span>
+</a>

@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% load emp %}
+{% block title %}{{ s.titulo }} · {{ CFG.nome }}{% endblock %}
+{% block description %}{{ s.resumo }}{% endblock %}
+{% block og_title %}{{ s.titulo }} · {{ CFG.nome }}{% endblock %}
+{% block jsonld %}{% url_absoluta s.get_absolute_url as u %}{% url_absoluta as base %}{% with nome=CFG.nome %}<script type="application/ld+json">{"@context":"https://schema.org","@type":"Service","name":"{{ s.titulo|escapejs }}","description":"{{ s.resumo|escapejs }}","url":"{{ u|escapejs }}","areaServed":"BR","provider":{"@type":"Organization","name":"{{ nome|escapejs }}","url":"{{ base|escapejs }}/"}}</script>{% endwith %}{% endblock %}
+{% block content %}
+{% include "partials/topo_pagina.html" with sec=S.servicos_topo titulo=s.titulo sub=s.resumo atual=s.titulo pai="Serviços" pai_url="/servicos/" %}
+<section class="secao">
+  <div class="wrap detalhe">
+    <article class="detalhe__principal">
+      {% if s.imagem %}<img class="detalhe__img" src="{{ s.imagem.url }}" alt="{{ s.titulo }}" data-revela>{% endif %}
+      <div class="prosa" data-revela>{{ s.descricao|default:s.resumo|paragrafos }}</div>
+      {% if s.lista_inclui %}<h2 class="h3" data-revela>O que inclui</h2><ul class="checks checks--grade" data-revela>{% for i in s.lista_inclui %}<li>{% icone "check" %}{{ i }}</li>{% endfor %}</ul>{% endif %}
+      {% if s.lista_perfis %}<h2 class="h3" data-revela>Perfis profissionais</h2><div class="tags" data-revela>{% for p in s.lista_perfis %}<span>{{ p }}</span>{% endfor %}</div>{% endif %}
+      {% if vagas %}<h2 class="h3">Vagas abertas nesta área</h2><div class="lista-vagas">{% for v in vagas %}{% include "partials/vaga_linha.html" %}{% endfor %}</div>{% endif %}
+    </article>
+    <aside class="detalhe__lado">
+      {% with c=S.servico_cta %}
+      <div class="cartao cartao--verde" data-revela="dir">
+        {% include "partials/fitas.html" with classe="fitas--cartao" %}
+        <span class="explorador__ico">{% icone s.icone "i i--40" %}</span>
+        <h2>{{ c.titulo|default:"Precisa de {servico}?"|troca:s.titulo }}</h2>
+        <p>{{ c.texto }}</p>
+        <a href="{% url 'core:proposta' %}?servico={{ s.pk }}" class="btn btn--ouro btn--bloco">{{ c.botao_texto|default:"Solicitar proposta" }} {% icone "seta" %}</a>
+      </div>
+      {% endwith %}
+      <nav class="outros-servicos" aria-label="Outros serviços"><p class="rotulo">{{ S.servico_cta.sobretitulo|default:"Outros serviços" }}</p>
+        {% for o in outros %}<a href="{{ o.get_absolute_url }}">{% icone o.icone "i i--24" %}{{ o.titulo }}{% icone "seta" %}</a>{% endfor %}</nav>
+    </aside>
+  </div>
+</section>
+{% endblock %}

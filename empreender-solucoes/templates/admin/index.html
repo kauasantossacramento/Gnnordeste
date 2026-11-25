@@ -1,0 +1,65 @@
+{% extends 'admin/base.html' %}
+{% load i18n %}
+{% block title %}Dashboard | {{ site_title }}{% endblock %}
+{% block branding %}{% include "unfold/helpers/site_branding.html" %}{% endblock %}
+{% block content %}
+<div class="emp-dash">
+  <div class="emp-dash__ola">
+    <div>
+      <p class="emp-rotulo">Painel Empreender</p>
+      <h1>Olá, {{ request.user.first_name|default:request.user.username }} 👋</h1>
+      <p>Resumo do site: pedidos de proposta, candidaturas, vagas e avisos.</p>
+    </div>
+    <div class="emp-dash__atalhos">
+      <a href="/painel/core/vaga/add/"><span class="material-symbols-outlined">add</span>Nova vaga</a>
+      <a href="/painel/core/aviso/add/"><span class="material-symbols-outlined">campaign</span>Novo aviso</a>
+      <a href="/painel/core/secao/"><span class="material-symbols-outlined">edit_note</span>Editar textos</a>
+      <a href="/" target="_blank"><span class="material-symbols-outlined">open_in_new</span>Ver site</a>
+    </div>
+  </div>
+
+  <div class="emp-kpis">
+    {% for k in kpis %}
+    <a class="emp-kpi" href="{{ k.link }}">
+      <span class="material-symbols-outlined">{{ k.icone }}</span>
+      <strong>{{ k.valor }}</strong>
+      <b>{{ k.rotulo }}</b>
+      <small>{{ k.dica }}</small>
+    </a>
+    {% endfor %}
+  </div>
+
+  <div class="emp-grade">
+    <section class="emp-card">
+      <header><h2>Últimos 14 dias</h2><span class="emp-legenda"><i class="p"></i>Propostas <i class="c"></i>Candidaturas</span></header>
+      <div class="emp-grafico">
+        {% for d in serie %}<div class="emp-grafico__dia" title="{{ d.dia }}: {{ d.p }} proposta(s), {{ d.c }} candidatura(s)">
+          <div class="emp-grafico__barras"><span class="p" style="height:{{ d.hp }}%"></span><span class="c" style="height:{{ d.hc }}%"></span></div>
+          <small>{{ d.dia }}</small></div>{% endfor %}
+      </div>
+    </section>
+    <section class="emp-card">
+      <header><h2>Funil comercial</h2></header>
+      <ul class="emp-funil">{% for rot, n in funil %}<li><span>{{ rot }}</span><b>{{ n }}</b></li>{% endfor %}</ul>
+      {% if nao_lidas %}<a class="emp-alerta" href="/painel/core/mensagem/?lida__exact=0"><span class="material-symbols-outlined">mail</span>{{ nao_lidas }} mensagem(ns) de contato não lida(s)</a>{% endif %}
+    </section>
+  </div>
+
+  <div class="emp-grade">
+    <section class="emp-card">
+      <header><h2>Propostas recentes</h2><a href="/painel/core/proposta/">ver todas</a></header>
+      <table class="emp-tabela"><tbody>
+        {% for p in propostas %}<tr><td><a href="/painel/core/proposta/{{ p.pk }}/change/"><b>{{ p.empresa }}</b></a><small>{{ p.protocolo }} · {{ p.cidade }}/{{ p.uf }}</small></td><td>{{ p.profissionais }} prof.</td><td><span class="emp-status emp-status--{{ p.status }}">{{ p.get_status_display }}</span></td></tr>
+        {% empty %}<tr><td class="emp-vazio">Nenhuma proposta ainda. Elas chegam pelo “Monte sua equipe”.</td></tr>{% endfor %}
+      </tbody></table>
+    </section>
+    <section class="emp-card">
+      <header><h2>Candidaturas recentes</h2><a href="/painel/core/candidatura/">ver todas</a></header>
+      <table class="emp-tabela"><tbody>
+        {% for c in candidaturas %}<tr><td><a href="/painel/core/candidatura/{{ c.pk }}/change/"><b>{{ c.nome }}</b></a><small>{{ c.vaga|default:"Banco de talentos" }}</small></td><td><span class="emp-status emp-status--{{ c.status }}">{{ c.get_status_display }}</span></td></tr>
+        {% empty %}<tr><td class="emp-vazio">Nenhuma candidatura ainda.</td></tr>{% endfor %}
+      </tbody></table>
+    </section>
+  </div>
+</div>
+{% endblock %}

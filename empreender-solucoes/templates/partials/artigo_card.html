@@ -1,0 +1,10 @@
+{% load emp %}
+<a href="{{ a.get_absolute_url }}" class="artigo-card" data-revela>
+  <div class="artigo-card__capa">{% if a.capa %}<img src="{{ a.capa.url }}" alt="" loading="lazy">{% else %}<div class="capa-padrao">{% include "partials/fitas.html" with classe="fitas--capa" %}</div>{% endif %}</div>
+  <div class="artigo-card__corpo">
+    <p class="artigo-card__meta"><span class="selo">{{ a.get_categoria_display }}</span><time datetime="{{ a.data|date:'c' }}">{{ a.data|date:"d M Y" }}</time></p>
+    <h3>{{ a.titulo }}</h3>
+    <p>{{ a.resumo|truncatechars:130 }}</p>
+    <span class="link-seta">Ler conteúdo {% icone "seta" %}</span>
+  </div>
+</a>

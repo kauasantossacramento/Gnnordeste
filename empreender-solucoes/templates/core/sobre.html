@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load static emp %}
+{% block title %}A empresa · {{ CFG.nome }}{% endblock %}
+{% block content %}
+{% include "partials/topo_pagina.html" with sec=S.sobre_topo %}
+{% avisos "sobre" %}
+{% with s=S.sobre_manifesto %}
+<section class="secao">
+  <div class="wrap manifesto">
+    <div class="manifesto__marca" data-revela="esq">
+      <div class="cartao-marca">
+        <img src="{{ MARCA.simbolo }}" alt="Símbolo da Empreender Soluções" width="226" height="300" loading="lazy">
+      </div>
+    </div>
+    <div>
+      <p class="rotulo" data-revela>{{ s.sobretitulo }}</p>
+      <h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2>
+      <div class="prosa" data-revela>{{ s.texto|paragrafos }}</div>
+    </div>
+  </div>
+</section>
+{% endwith %}
+{% with s=S.sobre_simbolo %}{% if s.ativo %}
+<section class="secao secao--areia">
+  <div class="wrap">
+    <div class="cabeca cabeca--dupla"><div><p class="rotulo" data-revela>{{ s.sobretitulo }}</p><h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2></div><p class="cabeca__texto" data-revela>{{ s.subtitulo }}</p></div>
+    <div class="conceitos">{% for item in s.lista %}{% with p=item|partes %}<div class="conceito" data-revela style="--i:{{ forloop.counter0 }}"><h3>{{ p.0 }}</h3><p>{{ p.1 }}</p></div>{% endwith %}{% endfor %}</div>
+  </div>
+</section>
+{% endif %}{% endwith %}
+{% with s=S.home_pilares %}{% if pilares %}
+<section class="secao secao--verde">
+  {% include "partials/fitas.html" with classe="fitas--fundo" %}
+  <div class="wrap">
+    <div class="cabeca"><p class="rotulo rotulo--ouro" data-revela>{{ s.sobretitulo }}</p><h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2></div>
+    <div class="pilares">{% for p in pilares %}<div class="pilar" data-revela style="--i:{{ forloop.counter0 }}"><span class="pilar__n">{{ forloop.counter|stringformat:"02d" }}</span><h3>{{ p.titulo }}</h3><p>{{ p.texto }}</p></div>{% endfor %}</div>
+  </div>
+</section>
+{% endif %}{% endwith %}
+{% with s=S.home_processo %}{% if etapas %}
+<section class="secao">
+  <div class="wrap">
+    <div class="cabeca cabeca--centro"><p class="rotulo" data-revela>{{ s.sobretitulo }}</p><h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2></div>
+    {% include "partials/processo.html" %}
+  </div>
+</section>
+{% endif %}{% endwith %}
+{% endblock %}

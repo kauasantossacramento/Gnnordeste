@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% load static emp %}
+{% block title %}Página não encontrada · {{ CFG.nome }}{% endblock %}
+{% block content %}
+<section class="secao nao-achou"><div class="wrap">
+  <img src="{{ MARCA.simbolo }}" alt="" width="113" height="150">
+  {% with s=S.geral_404 %}
+  <p class="rotulo">{{ s.sobretitulo|default:"Erro 404" }}</p>
+  <h1 class="h2">{{ s.titulo|default:"Página não encontrada"|destacar:s.destaque }}</h1>
+  <div class="linha-btns">{% if s.botao_texto %}<a href="{{ s.botao_link }}" class="btn btn--verde">{{ s.botao_texto }}</a>{% endif %}{% if s.botao2_texto %}<a href="{{ s.botao2_link }}" class="btn btn--contorno">{{ s.botao2_texto }}</a>{% endif %}</div>
+  {% endwith %}
+</div></section>
+{% endblock %}

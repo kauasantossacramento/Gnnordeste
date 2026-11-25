@@ -1,0 +1,4 @@
+<div class="campo campo--largo campo--check{% if f.errors %} campo--erro{% endif %}">
+  <label>{{ f }} <span>{{ f.label }}</span></label>
+  {% for e in f.errors %}<small class="campo__erro">{{ e }}</small>{% endfor %}
+</div>

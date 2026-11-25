@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+{% load emp %}
+{% block title %}Serviços · {{ CFG.nome }}{% endblock %}
+{% block description %}{{ S.servicos_topo.subtitulo|default:CFG.meta_descricao }}{% endblock %}
+{% block content %}
+{% include "partials/topo_pagina.html" with sec=S.servicos_topo %}
+{% avisos "servicos" %}
+<section class="secao">
+  <div class="wrap">
+    <div class="cards-servico">
+      {% for sv in servicos %}
+      <a href="{{ sv.get_absolute_url }}" class="card-servico" data-revela style="--i:{{ forloop.counter0 }}">
+        <span class="card-servico__n">{{ forloop.counter|stringformat:"02d" }}</span>
+        <span class="card-servico__ico">{% icone sv.icone "i i--40" %}</span>
+        <h2>{{ sv.titulo }}</h2>
+        <p>{{ sv.resumo }}</p>
+        {% if sv.lista_inclui %}<ul class="checks checks--p">{% for i in sv.lista_inclui|slice:":3" %}<li>{% icone "check" %}{{ i }}</li>{% endfor %}</ul>{% endif %}
+        <span class="link-seta">Ver serviço {% icone "seta" %}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </div>
+</section>
+{% with s=S.home_segmentos %}{% if segmentos %}
+<section class="secao secao--areia">
+  <div class="wrap">
+    <div class="cabeca cabeca--centro"><p class="rotulo" data-revela>{{ s.sobretitulo }}</p><h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2></div>
+    <ul class="segmentos__lista segmentos__lista--grade">{% for g in segmentos %}<li data-revela style="--i:{{ forloop.counter0 }}"><span class="segmentos__ico">{% icone g.icone "i i--32" %}</span><div><h3>{{ g.titulo }}</h3><p>{{ g.texto }}</p></div></li>{% endfor %}</ul>
+  </div>
+</section>
+{% endif %}{% endwith %}
+{% with s=S.home_processo %}{% if etapas %}
+<section class="secao"><div class="wrap">
+  <div class="cabeca cabeca--centro"><p class="rotulo" data-revela>{{ s.sobretitulo }}</p><h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2></div>
+  {% include "partials/processo.html" %}
+</div></section>
+{% endif %}{% endwith %}
+{% endblock %}

@@ -1,0 +1,34 @@
+{% load emp %}
+{% if enviada %}
+<div class="sucesso" role="status">
+  <span class="sucesso__ico">{% icone "check" "i i--32" %}</span>
+  <h3>Candidatura recebida!</h3>
+  <p>Guarde seu protocolo para acompanhar o andamento:</p>
+  <p class="protocolo" data-copiar>{{ enviada.protocolo }}</p>
+  <a class="link-seta" href="{% url 'core:acompanhar' %}?protocolo={{ enviada.protocolo }}">Acompanhar candidatura {% icone "seta" %}</a>
+</div>
+{% else %}
+<form method="post" enctype="multipart/form-data" class="form" novalidate data-form>
+  {% csrf_token %}
+  <div class="pote" aria-hidden="true">{{ form.website }}</div>
+  <div class="form__grade">
+    {% if v %}<input type="hidden" name="vaga" value="{{ v.pk }}">{% else %}{% include "partials/campo.html" with f=form.vaga largo=1 %}{% endif %}
+    {% include "partials/campo.html" with f=form.nome largo=1 %}
+    {% include "partials/campo.html" with f=form.email %}
+    {% include "partials/campo.html" with f=form.telefone %}
+    {% include "partials/campo.html" with f=form.cidade %}
+    {% include "partials/campo.html" with f=form.linkedin %}
+    <div class="campo campo--largo{% if form.curriculo.errors %} campo--erro{% endif %}">
+      <label for="id_curriculo">Currículo <abbr title="obrigatório">*</abbr> <small>PDF ou Word, até 5 MB</small></label>
+      <label class="upload" data-upload>
+        <input type="file" name="curriculo" id="id_curriculo" accept=".pdf,.doc,.docx,.odt" required>
+        {% icone "upload" "i i--24" %}<span data-upload-txt><b>Escolha o arquivo</b> ou arraste aqui</span>
+      </label>
+      {% for e in form.curriculo.errors %}<small class="campo__erro">{{ e }}</small>{% endfor %}
+    </div>
+    {% include "partials/campo.html" with f=form.mensagem largo=1 %}
+    {% include "partials/aceite.html" with f=form.aceite %}
+  </div>
+  <button class="btn btn--verde btn--bloco" type="submit">Enviar candidatura {% icone "seta" %}</button>
+</form>
+{% endif %}

@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% load emp %}
+{% block title %}{{ pg.titulo }} · {{ CFG.nome }}{% endblock %}
+{% block content %}
+{% include "partials/topo_pagina.html" with sec=S.pagina_topo titulo=pg.titulo atual=pg.titulo sub="" %}
+<section class="secao"><div class="wrap estreito"><div class="prosa prosa--artigo">{{ pg.conteudo|paragrafos }}</div>
+<p class="muted">Atualizada em {{ pg.atualizado_em|date:"d/m/Y" }}</p></div></section>
+{% endblock %}

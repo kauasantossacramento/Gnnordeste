@@ -1,0 +1,10 @@
+{% load emp %}
+<section class="topo-pg{% if escuro %} topo-pg--verde{% endif %}">
+  {% include "partials/fitas.html" with classe="fitas--topo" %}
+  <div class="wrap topo-pg__in">
+    <nav class="trilha" aria-label="Você está em"><a href="{% url 'core:home' %}">Início</a>{% if pai %}<span>/</span><a href="{{ pai_url }}">{{ pai }}</a>{% endif %}<span>/</span><span aria-current="page">{{ atual|default:sec.get_pagina_display }}</span></nav>
+    {% if sec.sobretitulo %}<p class="rotulo{% if escuro %} rotulo--ouro{% endif %}" data-revela>{{ sec.sobretitulo }}</p>{% endif %}
+    <h1 data-revela>{{ titulo|default:sec.titulo|destacar:sec.destaque }}</h1>
+    {% if sec.subtitulo or sub %}<p class="topo-pg__sub" data-revela>{{ sub|default:sec.subtitulo }}</p>{% endif %}
+  </div>
+</section>

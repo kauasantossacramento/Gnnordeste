@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+{% load emp %}
+{% block title %}Carreiras · Vagas abertas · {{ CFG.nome }}{% endblock %}
+{% block description %}Vagas abertas na Empreender Soluções. Envie seu currículo e acompanhe sua candidatura pelo protocolo.{% endblock %}
+{% block content %}
+{% include "partials/topo_pagina.html" with sec=S.carreiras_topo escuro=1 %}
+{% avisos "carreiras" %}
+<section class="secao" id="vagas">
+  <div class="wrap">
+    <div class="cabeca cabeca--dupla">
+      {% with s=S.carreiras_vagas %}<div><p class="rotulo" data-revela>{{ s.sobretitulo }}</p><h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2></div>
+      {% if s.botao_texto %}<a href="{{ s.botao_link }}" class="btn btn--contorno" data-revela>{% icone "busca" %} {{ s.botao_texto }}</a>{% endif %}{% endwith %}
+    </div>
+    {% if vagas %}
+    <div class="filtros" data-filtros data-revela>
+      <label class="busca">{% icone "busca" %}<input type="search" placeholder="Buscar cargo ou cidade" data-filtro-busca aria-label="Buscar vagas"></label>
+      {% if cidades|length > 1 %}<select data-filtro-cidade aria-label="Filtrar por cidade"><option value="">Todas as cidades</option>{% for c in cidades %}<option>{{ c }}</option>{% endfor %}</select>{% endif %}
+      {% if areas|length > 1 %}<select data-filtro-area aria-label="Filtrar por área"><option value="">Todas as áreas</option>{% for a in areas %}<option>{{ a }}</option>{% endfor %}</select>{% endif %}
+      <span class="filtros__total"><b data-filtro-total>{{ vagas|length }}</b> vaga{{ vagas|length|pluralize }}</span>
+    </div>
+    <div class="lista-vagas" data-lista-vagas>{% for v in vagas %}{% include "partials/vaga_linha.html" %}{% endfor %}</div>
+    <p class="vazio" data-filtro-vazio hidden>Nenhuma vaga com esses filtros.</p>
+    {% else %}
+    <div class="vazio">{% icone "maleta" "i i--32" %}<p>{{ S.carreiras_vagas.texto }}</p></div>
+    {% endif %}
+  </div>
+</section>
+{% with s=S.carreiras_form %}
+<section class="secao secao--areia" id="candidatura">
+  <div class="wrap duas-col">
+    <div>
+      <p class="rotulo" data-revela>{{ s.sobretitulo }}</p>
+      <h2 class="h2" data-revela>{{ s.titulo|destacar:s.destaque }}</h2>
+      <div class="prosa" data-revela>{{ s.texto|paragrafos }}</div>
+      <ol class="passos" data-revela>{% for i in s.lista %}<li><span>{{ forloop.counter }}</span>{{ i }}</li>{% endfor %}</ol>
+    </div>
+    <div class="cartao cartao--form" data-revela="dir"><h3>Envie seu currículo</h3>{% include "partials/candidatura_form.html" %}</div>
+  </div>
+</section>
+{% endwith %}
+{% endblock %}

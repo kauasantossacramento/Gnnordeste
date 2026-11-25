@@ -1,0 +1,36 @@
+{% extends "base.html" %}
+{% load emp %}
+{% block title %}Vaga: {{ v.titulo }} em {{ v.local }} · {{ CFG.nome }}{% endblock %}
+{% block description %}{{ v.resumo }}{% endblock %}
+{% block og_title %}Vaga: {{ v.titulo }} · {{ v.local }}{% endblock %}
+{% block jsonld %}{% if v.aberta %}{% vaga_jsonld v %}{% endif %}{% endblock %}
+{% block content %}
+{% include "partials/topo_pagina.html" with sec=S.carreiras_topo escuro=1 titulo=v.titulo sub=v.resumo atual="Vaga" pai="Carreiras" pai_url="/carreiras/" %}
+<section class="secao">
+  <div class="wrap detalhe">
+    <article class="detalhe__principal">
+      <ul class="ficha" data-revela>
+        <li><small>Local</small><b>{{ v.local }}</b></li>
+        <li><small>Regime</small><b>{{ v.get_regime_display }}</b></li>
+        <li><small>Modalidade</small><b>{{ v.get_modalidade_display }}</b></li>
+        <li><small>Vagas</small><b>{{ v.quantidade }}</b></li>
+        {% if v.prazo %}<li><small>Inscrições até</small><b>{{ v.prazo|date:"d/m/Y" }}</b></li>{% endif %}
+      </ul>
+      <div class="prosa" data-revela>
+        {% if v.descricao %}<h2>Atividades</h2>{{ v.descricao|paragrafos }}{% endif %}
+      </div>
+      {% if v.lista_requisitos %}<h2 class="h3" data-revela>Requisitos</h2><ul class="checks" data-revela>{% for r in v.lista_requisitos %}<li>{% icone "check" %}{{ r }}</li>{% endfor %}</ul>{% endif %}
+      {% if v.lista_beneficios %}<h2 class="h3" data-revela>Benefícios</h2><div class="tags" data-revela>{% for b in v.lista_beneficios %}<span>{{ b }}</span>{% endfor %}</div>{% endif %}
+      {% if v.salario %}<p class="nota" data-revela>{% icone "info" %} {{ v.salario }}</p>{% endif %}
+      {% if v.edital %}<a class="arquivo" href="{{ v.edital.url }}" target="_blank" rel="noopener" data-revela>{% icone "arquivo" "i i--32" %}<span><b>Edital / anexo da vaga</b><small>Abrir arquivo</small></span>{% icone "download" %}</a>{% endif %}
+    </article>
+    <aside class="detalhe__lado" id="candidatura">
+      <div class="cartao cartao--form" data-revela="dir">
+        {% if v.aberta %}<h3>Candidate-se</h3>{% include "partials/candidatura_form.html" %}
+        {% else %}<h3>Inscrições encerradas</h3><p>Veja outras oportunidades ou cadastre-se no banco de talentos.</p><a href="{% url 'core:carreiras' %}" class="btn btn--verde btn--bloco">Ver vagas abertas</a>{% endif %}
+      </div>
+    </aside>
+  </div>
+</section>
+{% if outras %}<section class="secao secao--areia"><div class="wrap"><div class="cabeca"><h2 class="h2">Outras <em>vagas</em></h2></div><div class="lista-vagas">{% for v in outras %}{% include "partials/vaga_linha.html" %}{% endfor %}</div></div></section>{% endif %}
+{% endblock %}

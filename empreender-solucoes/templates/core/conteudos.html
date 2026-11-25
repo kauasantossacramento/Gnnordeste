@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% load emp %}
+{% block title %}Conteúdos · {{ CFG.nome }}{% endblock %}
+{% block content %}
+{% include "partials/topo_pagina.html" with sec=S.conteudos_topo %}
+{% avisos "conteudos" %}
+<section class="secao"><div class="wrap">
+  <nav class="chips chips--nav" aria-label="Categorias"><a href="?" {% if not categoria %}aria-current="true"{% endif %}>Todos</a>{% for k, n in categorias %}<a href="?categoria={{ k }}" {% if categoria == k %}aria-current="true"{% endif %}>{{ n }}</a>{% endfor %}</nav>
+  {% if pagina.object_list %}
+  <div class="artigos">{% for a in pagina %}{% include "partials/artigo_card.html" %}{% endfor %}</div>
+  {% if pagina.has_other_pages %}<nav class="paginacao">{% if pagina.has_previous %}<a href="?p={{ pagina.previous_page_number }}{% if categoria %}&categoria={{ categoria }}{% endif %}">← Anteriores</a>{% endif %}<span>{{ pagina.number }} / {{ pagina.paginator.num_pages }}</span>{% if pagina.has_next %}<a href="?p={{ pagina.next_page_number }}{% if categoria %}&categoria={{ categoria }}{% endif %}">Próximos →</a>{% endif %}</nav>{% endif %}
+  {% else %}<div class="vazio">{% icone "arquivo" "i i--32" %}<p>Nenhum conteúdo publicado ainda.</p></div>{% endif %}
+</div></section>
+{% endblock %}
